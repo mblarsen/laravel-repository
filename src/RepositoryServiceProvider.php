@@ -4,13 +4,16 @@ namespace Mblarsen\LaravelRepository;
 
 use Illuminate\Support\ServiceProvider;
 
-class LaravelRepositoryServiceProvider extends ServiceProvider
+class RepositoryServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
      */
     public function boot()
     {
+        if ($this->app->environment('testing')) {
+            $this->loadMigrationsFrom([__DIR__ . '/../tests/migrations']);
+        }
     }
 
     /**

@@ -44,12 +44,17 @@ class Repository
         $repository = resolve(static::class);
         $repository->setModel($model);
         if ($context) {
-            $repository->setResourceContext($context);
+            $repository->setContext($context);
         }
         return $repository;
     }
 
-    public function setResourceContext(ResourceContext $resource_context)
+    public function getContext(): ResourceContext
+    {
+        return $this->resource_context;
+    }
+
+    public function setContext(ResourceContext $resource_context)
     {
         $this->resource_context = $resource_context;
     }
