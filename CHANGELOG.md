@@ -1,0 +1,7 @@
+# Changelog
+
+All notable changes to `laravel-repository` will be documented in this file
+
+## next
+
+-   initial release

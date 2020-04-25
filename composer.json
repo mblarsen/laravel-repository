@@ -1,0 +1,54 @@
+{
+    "name": "mblarsen/laravel-repository",
+    "description": "Beefed up query-builder and repository to reduce boilerplate and keep your controllers lean.",
+    "keywords": [
+        "mblarsen",
+        "laravel-repository",
+        "query-builder"
+    ],
+    "homepage": "https://github.com/mblarsen/laravel-repository",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Michael Bøcker-Larsen",
+            "email": "m19n@pm.me",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "illuminate/support": "^6.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^4.0",
+        "phpunit/phpunit": "^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mblarsen\\LaravelRepository\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mblarsen\\LaravelRepository\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mblarsen\\LaravelRepository\\LaravelRepositoryServiceProvider"
+            ],
+            "aliases": {
+                "LaravelRepository": "Mblarsen\\LaravelRepository\\LaravelRepositoryFacade"
+            }
+        }
+    }
+}
