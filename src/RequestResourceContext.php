@@ -5,7 +5,6 @@ namespace Mblarsen\LaravelRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 
 class RequestResourceContext implements ResourceContext
 {
@@ -25,12 +24,12 @@ class RequestResourceContext implements ResourceContext
 
     public function page(): int
     {
-        return $this->request->has('page', 1);
+        return $this->request->get('page', 1);
     }
 
     public function perPage(): int
     {
-        return $this->request->has('per_page', 15);
+        return $this->request->get('per_page', 15);
     }
 
     public function paginate(): bool
