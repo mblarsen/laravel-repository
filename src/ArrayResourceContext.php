@@ -63,4 +63,18 @@ final class ArrayResourceContext implements ResourceContext
     {
         return $this->context[$key] ?? $default;
     }
+
+    public function merge(array $values)
+    {
+        $this->context = array_merge($this->context, $values);
+
+        return $this;
+    }
+
+    public function exclude(array $keys)
+    {
+        $this->context = Arr::except($this->context, $keys);
+
+        return $this;
+    }
 }
