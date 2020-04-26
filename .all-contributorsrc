@@ -1,0 +1,26 @@
+{
+  "projectName": "laravel-repository",
+  "projectOwner": "mblarsen",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "none",
+  "contributors": [
+    {
+      "login": "mblarsen",
+      "name": "Michael Bøcker-Larsen",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/247048?v=4",
+      "profile": "https://www.codeboutique.com",
+      "contributions": [
+        "code",
+        "doc",
+        "maintenance"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}

@@ -357,3 +357,22 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 This package was generated using the [Laravel Package Boilerplate](https://laravelpackageboilerplate.com).
 
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://www.codeboutique.com"><img src="https://avatars0.githubusercontent.com/u/247048?v=4" width="100px;" alt=""/><br /><sub><b>Michael Bøcker-Larsen</b></sub></a><br /><a href="https://github.com/mblarsen/laravel-repository/commits?author=mblarsen" title="Code">💻</a> <a href="https://github.com/mblarsen/laravel-repository/commits?author=mblarsen" title="Documentation">📖</a> <a href="#maintenance-mblarsen" title="Maintenance">🚧</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
