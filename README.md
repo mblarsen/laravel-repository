@@ -10,7 +10,7 @@
 The goal of this repository implementation:
 
 1. Separate controller code from query code
-2. avoid boilerplate for paged, filtersed, and sorted resources
+2. avoid boilerplate for paged, filtered, and sorted resources
 3. let you be in control of the query for special cases
 
 Practically the repository class is a mix between a query builder and a repository.
@@ -19,7 +19,7 @@ Features:
 
 -   Get started with zero config.
 -   The usual suspects: `all`, `find`, `create`, `update`, `destroy`.
--   Front-end and user driven. The request is the context for whad gets included:
+-   Front-end and user driven. The request is the context for what gets included:
     -   filter query on model and relations
     -   include relations (all blocked by default)
     -   deal with paging transparently
@@ -30,7 +30,7 @@ This package includes one interfaces and and three classes for you to build on:
 
 -   `Repository` class, to use as is or extend for your model needs.
 -   `ResourceContext` interface, provides data to the repository.
--   `RequestResourceContext`, draws data from the incomming Request object.
+-   `RequestResourceContext`, draws data from the incoming Request object.
 -   `ArrayResourceContext`, you provide the data. Good for testing.
 
 ## Installation
@@ -58,7 +58,7 @@ $repository = resolve(Repository::class)->setModel(Post::class);
 $repository = Repository::for(Post::class);
 ```
 
-When used in controllers it is recommended letitng Laravel do the work for you:
+When used in controllers it is recommended letting Laravel do the work for you:
 
 ```php
 public function index(Repository $repository)
@@ -178,7 +178,7 @@ class PostRepository extends Repository
     protected $default_sort_by = 'created_at';
 
     // ... in descending order
-    protected $default_sort_direction = 'desc';
+    protected $default_sort_order = 'desc';
 
     // We override modelQuery to ensure only
     // published posts will be returned
@@ -199,7 +199,7 @@ class PostRepository extends Repository
 }
 ```
 
-You can achive the same with the base repository, but of course then you would
+You can achieve the same with the base repository, but of course then you would
 have to repeat the setup every time:
 
 ```
@@ -218,7 +218,7 @@ public function index(Repository $repository)
 }
 ```
 
-versus:
+Versus:
 
 ```
 public function index(PostRepository $repository)
@@ -231,22 +231,24 @@ public function index(PostRepository $repository)
 
 ## API
 
--   `all($query = null)`
--   `find($id, $query = null)`
--   `create(array $data)`
--   `update(Model $model, array $data)`
--   `destroy(Model $model)`
--   `setResourceContext(ResourceContext $resource_context)`
--   `setModel(string $model)`
--   `setAllowedWith(array $allowed)`
--   `setDefaultWith(array $with)`
--   `setDefaulSort(string $by, string $direction = 'asc')`
+-   [`all($query = null)`](#all)
+-   [`find($id, $query = null)`](#find)
+-   [`create(array $data)`](#create)
+-   [`update(Model $model, array $data)`](#update)
+-   [`destroy(Model $model)`](#destroy)
+-   [`setContext(ResourceContext $resource_context)`](setContext)
+-   [`setModel(string $model)`](setModel)
+-   [`setAllowedWith(array $allowed)`](#setAllowedWith)
+-   [`setDefaultSort(string $by, string $order = 'asc')`](#setDefaulSort)
+-   [`setDefaultWith(array $with)`](#setDefaultWith)
 
 When extending the base repository you may want to check out these additional functions:
 
--   `modelQuery($query = null)`
+-   [`modelQuery($query = null)`](#modelQuery)
 
 ### `all($query = null)`
+
+<a name="all"></a>
 
 Return all models given the current resource context.
 
@@ -264,43 +266,64 @@ public function index(UserRepository $user_repository)
 
 ### `find($id, $query = null)`
 
+<a name="find"></a>
 Gets a single model. You can further narrow down the result by providing a start query. See exmaple in `all()`
 
 ### `create(array $data)`
+
+<a name="create"></a>
 
 Typical Crud.
 
 ### `update(Model $model, array $data)`
 
+<a name="update"></a>
+
 Typical crUd.
 
 ### `destroy(Model $model)`
 
+<a name="destroy"></a>
+
 Typical cruD.
 
-### `setResourceContext(ResourceContext $resource_context)`
+### `setContext(ResourceContext $resource_context)`
+
+<a name="setContext"></a>
 
 This method lets you set or change the context after the repository is created.
 
 ### `setModel(string $model)`
 
+<a name="setModel"></a>
+
 See example code.
 
 ### `setAllowedWith(array $allowed)`
 
+<a name="setAllowedWith"></a>
+
 See example code.
+
+### `setDefaultSort(string $by, string $order = 'asc')`
+
+<a name="setDefaultSort"></a>
 
 ### `setDefaultWith(array $with)`
 
-### `setDefaulSort(string $by, string $direction = 'asc')`
+<a name="setDefaultWith"></a>
 
 See example code.
 
 ### `modelQuery($query = null)`
 
+<a name="modelQuery"></a>
+
 See example code.
 
 ### `interface ResourceContext`
+
+<a name="ResourceContext"></a>
 
 See [ResourceContext](https://github.com/mblarsen/laravel-repository/tree/master/src/ResourceContext.php) implementation.
 
