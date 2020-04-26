@@ -56,4 +56,22 @@ class RequestResourceContext implements ResourceContext
             ? Arr::wrap($this->request->get('with'))
             : [];
     }
+
+    /**
+     * Convert the request context to an array
+     */
+    public function toArray(): array
+    {
+        [$sort_by, $sort_order] = $this->sortBy();
+        return [
+            'filters' => $this->filters(),
+            'page' => $this->page(),
+            'paginate' => $this->paginate(),
+            'per_page' => $this->perPage(),
+            'sort_by' => $sort_by,
+            'sort_order' => $sort_order,
+            'user' => $this->user(),
+            'with' => $this->with(),
+        ];
+    }
 }
