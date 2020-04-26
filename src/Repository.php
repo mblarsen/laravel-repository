@@ -29,7 +29,7 @@ class Repository
     protected $default_with = [];
 
     /** @var string default_sort_by */
-    protected $default_sort_by = 'name';
+    protected $default_sort_by;
 
     /** @var string default_sort_direction */
     protected $default_sort_direction = 'asc';
@@ -57,6 +57,8 @@ class Repository
     public function setContext(ResourceContext $resource_context)
     {
         $this->resource_context = $resource_context;
+
+        return $this;
     }
 
     public function setModel(string $model)
@@ -154,6 +156,10 @@ class Repository
 
         $by = $ordering['sort_by'] ?: $this->default_sort_by;
         $order = $ordering['sort_order'] ?: $this->default_sort_direction;
+
+        if (!$by) {
+            return $this;
+        }
 
         if (strpos($by, '.') === false) {
             $query->orderBy($by, $order);
