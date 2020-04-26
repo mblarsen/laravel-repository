@@ -3,18 +3,19 @@
 namespace Mblarsen\LaravelRepository;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 
 final class ArrayResourceContext implements ResourceContext
 {
     /** @var array */
     protected $context;
 
-    public static function create(array $context): self
+    public static function create(array $context = []): self
     {
         return new self($context);
     }
 
-    public function __construct(array $context)
+    public function __construct(array $context = [])
     {
         /** @var array */
         $this->context = $context;
