@@ -44,11 +44,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Mblarsen\\LaravelRepository\\LaravelRepositoryServiceProvider"
-            ],
-            "aliases": {
-                "LaravelRepository": "Mblarsen\\LaravelRepository\\LaravelRepositoryFacade"
-            }
+                "Mblarsen\\LaravelRepository\\RepositoryServiceProvider"
+            ]
         }
     }
 }
