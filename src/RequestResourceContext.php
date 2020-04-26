@@ -41,8 +41,8 @@ class RequestResourceContext implements ResourceContext
     public function sortBy(): array
     {
         return [
-            'sort_by' => Str::snake($this->request->get('sort_by', null)),
-            'sort_order' => $this->request->get('sort_order', null),
+            $this->request->get('sort_by', null),
+            $this->request->get('sort_order', null),
         ];
     }
 

@@ -44,8 +44,8 @@ final class ArrayResourceContext implements ResourceContext
     public function sortBy(): array
     {
         return [
-            'sort_by' => $this->get('sort_by', null),
-            'sort_order' => $this->get('sort_order', null),
+            $this->get('sort_by', null),
+            $this->get('sort_order', 'asc'),
         ];
     }
 
