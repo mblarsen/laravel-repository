@@ -4,7 +4,9 @@ namespace Mblarsen\LaravelRepository;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator as PaginationLengthAwarePaginator;
 use InvalidArgumentException;
 use Mblarsen\LaravelRepository\Traits\Filters;
 use Mblarsen\LaravelRepository\Traits\IncludesRelations;
@@ -123,14 +125,29 @@ class Repository
             return $this->all($query);
         }
 
+        $mapper = function (Model $model) use ($column) {
+            return [
+                'value' => $model->getKey(),
+                'label' => $column($model)
+            ];
+        };
+
         if (is_callable($column)) {
-            return $this->all($query)
-                ->map(function (Model $model) use ($column) {
-                    return [
-                        'value' => $model->getKey(),
-                        'label' => $column($model)
-                    ];
-                });
+            $all = $this->all($query);
+
+            if ($all instanceof Collection) {
+                $all = $all->map($mapper);
+            } elseif ($all instanceof LengthAwarePaginator) {
+                $items = collect($all->items())->map($mapper)->toArray();
+                $all = new PaginationLengthAwarePaginator(
+                    $items,
+                    $all->total(),
+                    $all->perPage(),
+                    $all->currentPage()
+                );
+            }
+
+            return $all;
         }
 
         throw new InvalidArgumentException("'column' should be a string or callable");

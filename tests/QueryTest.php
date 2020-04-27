@@ -103,6 +103,25 @@ class QueryTest extends TestCase
     }
 
     /** @test */
+    public function fetches_list_paginated()
+    {
+        /** @var LengthAwarePaginator */
+        $posts = Repository::for(
+            Post::class,
+            ArrayResourceContext::create(['page' => 1, 'per_page' => 2])
+        )
+            ->list('title');
+
+        $this->assertEquals(
+            [
+                ['value' => 1, 'label' => 'aliens'],
+                ['value' => 2, 'label' => 'fish'],
+            ],
+            collect($posts->items())->toArray()
+        );
+    }
+
+    /** @test */
     public function fetches_list_invalid_column()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -124,6 +143,27 @@ class QueryTest extends TestCase
                 ['value' => 3, 'label' => 'mars jensen']
             ],
             $posts->toArray()
+        );
+    }
+
+    /** @test */
+    public function fetches_list_paginated_with_callback()
+    {
+        /** @var LengthAwarePaginator */
+        $posts = Repository::for(
+            User::class,
+            ArrayResourceContext::create(['page' => 1, 'per_page' => 2])
+        )
+            ->list(function ($user) {
+                return $user->full_name;
+            });
+
+        $this->assertEquals(
+            [
+                ['value' => 1, 'label' => 'foo jensen'],
+                ['value' => 2, 'label' => 'bar larsen'],
+            ],
+            collect($posts->items())->toArray()
         );
     }
 
