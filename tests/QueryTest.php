@@ -7,6 +7,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
 use Mblarsen\LaravelRepository\ArrayResourceContext;
 use Mblarsen\LaravelRepository\Repository;
 use Mblarsen\LaravelRepository\Tests\Models\Country;
@@ -83,6 +84,47 @@ class QueryTest extends TestCase
         $this->assertEquals(3, $users->lastItem());
 
         $this->assertEquals(['mars'], Arr::pluck($users->items(), ['first_name']));
+    }
+
+    /** @test */
+    public function fetches_list()
+    {
+        /** @var Collection $posts */
+        $posts = Repository::for(Post::class)->list('title');
+
+        $this->assertEquals(
+            [
+                ['value' => 1, 'label' => 'aliens'],
+                ['value' => 2, 'label' => 'fish'],
+                ['value' => 3, 'label' => 'boats']
+            ],
+            $posts->toArray()
+        );
+    }
+
+    /** @test */
+    public function fetches_list_invalid_column()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        Repository::for(Post::class)->list(['not good']);
+    }
+
+    /** @test */
+    public function fetches_list_with_callback()
+    {
+        /** @var Collection $posts */
+        $posts = Repository::for(User::class)->list(function ($user) {
+            return $user->full_name;
+        });
+
+        $this->assertEquals(
+            [
+                ['value' => 1, 'label' => 'foo jensen'],
+                ['value' => 2, 'label' => 'bar larsen'],
+                ['value' => 3, 'label' => 'mars jensen']
+            ],
+            $posts->toArray()
+        );
     }
 
     /** @test */

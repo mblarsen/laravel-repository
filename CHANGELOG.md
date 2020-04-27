@@ -4,6 +4,8 @@ All notable changes to `laravel-repository` will be documented in this file
 
 ## next
 
+-   feat: add [`list()`](README.md#list)
+
 ## 0.2.0
 
 -   fix: throw exception if input query doesn't match model

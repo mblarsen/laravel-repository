@@ -232,6 +232,7 @@ public function index(PostRepository $repository)
 ## API
 
 -   [`all($query = null)`](#all)
+-   [`list(string|callabel $column, $query = null)`](#list)
 -   [`find($id, $query = null)`](#find)
 -   [`create(array $data)`](#create)
 -   [`update(Model $model, array $data)`](#update)
@@ -264,9 +265,18 @@ public function index(UserRepository $user_repository)
 }
 ```
 
+### `list(string|callabel $column, $query = null)`
+
+<a name="list"></a>
+
+Produces a result suitable for selects, lists, and autocomplete. All entries that has a 'value' and a 'label' key.
+
+Note: if a callable is used the mapping is performed in memory, while a string is done in the database layer.
+
 ### `find($id, $query = null)`
 
 <a name="find"></a>
+
 Gets a single model. You can further narrow down the result by providing a start query. See exmaple in `all()`
 
 ### `create(array $data)`

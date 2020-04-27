@@ -103,6 +103,39 @@ class Repository
             ->paginate($query);
     }
 
+    /**
+     * Produces a result suitable for selects, lists, and autocomplete. All
+     * entries that has a 'value' and a 'label' key.
+     *
+     * Note: if a callable is used the mapping is performed in memory, while a
+     * string is done in the database layer.
+     *
+     * @param callable|string $column
+     * @param Builder $query
+     * @return Collection
+     */
+    public function list($column = null, $query = null)
+    {
+        $query = $this->modelQuery($query);
+
+        if (is_string($column)) {
+            $query->select([$query->getModel()->getKeyName() . " AS value", "$column AS label"]);
+            return $this->all($query);
+        }
+
+        if (is_callable($column)) {
+            return $this->all($query)
+                ->map(function (Model $model) use ($column) {
+                    return [
+                        'value' => $model->getKey(),
+                        'label' => $column($model)
+                    ];
+                });
+        }
+
+        throw new InvalidArgumentException("'column' should be a string or callable");
+    }
+
     public function find($id, $query = null): Model
     {
         $query = $this->modelQuery($query);
