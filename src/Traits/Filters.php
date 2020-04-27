@@ -38,7 +38,7 @@ trait Filters
             $path = explode('.', $path);
         }
 
-        $multi_column = strpos($original, '|') !== false;
+        $multi_column = is_string($original) && strpos($original, '|') !== false;
 
         if ($initial && $multi_column) {
             $columns = explode('|', $original);
@@ -65,7 +65,7 @@ trait Filters
                 $path,
                 $value
             ) {
-                $this->applyFilters($query, $path, $value);
+                $this->applyFiltersRecursively($query, $path, $value);
             });
         }
     }

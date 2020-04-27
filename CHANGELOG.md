@@ -5,6 +5,8 @@ All notable changes to `laravel-repository` will be documented in this file
 ## next
 
 -   feat: add [`list()`](README.md#list)
+-   fix: correctly deal with depper nested filters
+-   docs: add CONTRIBUTING text
 
 ## 0.2.0
 

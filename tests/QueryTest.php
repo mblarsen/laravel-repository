@@ -408,6 +408,34 @@ class QueryTest extends TestCase
         $this->assertEquals('aliens', $posts->first()->title);
     }
 
+    /** @test */
+    public function filter_by_relation_deeper()
+    {
+        $repository = Repository::for(User::class)
+            ->setContext(ArrayResourceContext::create(
+                [
+                    'filters' => [
+                        'posts.postMeta.version' => 3,
+                    ]
+                ]
+            ));
+        /** @var Collection */
+        $users = $repository->all();
+        $this->assertEquals(1, $users->count());
+        $this->assertEquals('foo', $users->first()->first_name);
+
+        $repository->setContext(ArrayResourceContext::create(
+            [
+                'filters' => [
+                    'posts.postMeta.version' => 2,
+                ]
+            ]
+        ));
+        /** @var Collection */
+        $users = $repository->all();
+        $this->assertEquals(1, $users->count());
+        $this->assertEquals('bar', $users->first()->first_name);
+    }
 
     protected function logDB($callback)
     {
