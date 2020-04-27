@@ -203,7 +203,7 @@ class PostRepository extends Repository
 You can achieve the same with the base repository, but of course then you would
 have to repeat the setup every time:
 
-```
+```php
 public function index(Repository $repository)
 {
     $only_published = Post::query()->whereNotNul('published_at');
@@ -221,7 +221,7 @@ public function index(Repository $repository)
 
 Versus:
 
-```
+```php
 public function index(PostRepository $repository)
 {
     return $repository->all();
