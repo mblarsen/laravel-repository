@@ -410,7 +410,7 @@ This package was generated using the [Laravel Package Boilerplate](https://larav
 
 Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
 
-Please see [DEVLOPING](.github/DEVLOPING.md) for help getting started.
+Please see [DEVELOPING](.github/DEVELOPING.md) for help getting started.
 
 ## Contributors ✨
 

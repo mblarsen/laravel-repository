@@ -1,6 +1,6 @@
 # Developing
 
-Please first read [CONTRIBUTING](.github/CONTRIBUTING.md).
+Please first read [CONTRIBUTING](CONTRIBUTING.md).
 
 ## Running tests
 
