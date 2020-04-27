@@ -4,6 +4,8 @@ All notable changes to `laravel-repository` will be documented in this file
 
 ## next
 
+## 0.5.0
+
 -   feat: add `default_list_column`
 -   feat: add `register()` method for sub-classes
 
