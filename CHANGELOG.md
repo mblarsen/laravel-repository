@@ -4,6 +4,8 @@ All notable changes to `laravel-repository` will be documented in this file
 
 ## next
 
+## 0.4.0
+
 -   feat: support for JsonResource (see [README resources section](README.md#resources)
 
 ## 0.3.0
