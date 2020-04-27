@@ -125,6 +125,23 @@ class Repository
     }
 
     /**
+     * Execute query
+     *
+     * @param Builder $query
+     * @return LengthAwarePaginator|Collection
+     */
+    private function execute($query)
+    {
+        $page = $this->resource_context->page();
+        $per_page = $this->resource_context->perPage();
+        $should_paginate = $this->resource_context->paginate();
+
+        return $should_paginate
+            ? $query->paginate($per_page, ['*'], 'page', $page)
+            : $query->get();
+    }
+
+    /**
      * Produces a result suitable for selects, lists, and autocomplete. All
      * entries that has a 'value' and a 'label' key.
      *
@@ -217,22 +234,5 @@ class Repository
         }
 
         return $this;
-    }
-
-    /**
-     * Execute query
-     *
-     * @param Builder $query
-     * @return LengthAwarePaginator|Collection
-     */
-    private function execute($query)
-    {
-        $page = $this->resource_context->page();
-        $per_page = $this->resource_context->perPage();
-        $should_paginate = $this->resource_context->paginate();
-
-        return $should_paginate
-            ? $query->paginate($per_page, ['*'], 'page', $page)
-            : $query->get();
     }
 }
