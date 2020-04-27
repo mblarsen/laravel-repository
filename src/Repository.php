@@ -89,7 +89,7 @@ class Repository
      * Return all models based on resource context and query
      *
      * The ResourceContext determines if the result is a Collection or a
-     * Paginator.
+     * LengthAwarePaginator.
      *
      * @return LengthAwarePaginator|Collection
      */
@@ -102,7 +102,7 @@ class Repository
             ->applyWith($query)
             ->applySort($query)
             ->applyFilters($query)
-            ->paginate($query);
+            ->execute($query);
     }
 
     /**
@@ -174,6 +174,7 @@ class Repository
     public function update(Model $model, array $data): Model
     {
         $model->update($data);
+
         return $model;
     }
 
@@ -200,10 +201,12 @@ class Repository
     }
 
     /**
+     * Execute query
+     *
      * @param Builder $query
      * @return LengthAwarePaginator|Collection
      */
-    private function paginate($query)
+    private function execute($query)
     {
         $page = $this->resource_context->page();
         $per_page = $this->resource_context->perPage();
