@@ -11,7 +11,10 @@
          processIsolation="false"
          stopOnFailure="false">
     <testsuites>
-        <testsuite name="Test Suite">
+        <testsuite name="Setup">
+            <file>tests/SetupTest.php</file>
+        </testsuite>
+        <testsuite name="Full">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
