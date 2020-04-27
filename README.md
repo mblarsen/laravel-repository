@@ -335,15 +335,11 @@ See example code.
 
 <a name="ResourceContext"></a>
 
-See [ResourceContext](https://github.com/mblarsen/laravel-repository/tree/master/src/ResourceContext.php) implementation.
+See [ResourceContext](src/ResourceContext.php) implementation.
 
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
-
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Security
 
@@ -367,6 +363,9 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 This package was generated using the [Laravel Package Boilerplate](https://laravelpackageboilerplate.com).
 
+## Contributing
+
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Contributors ✨
 
@@ -383,6 +382,8 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+
