@@ -13,6 +13,11 @@ class User extends Model
         return $this->hasMany(Post::class);
     }
 
+    public function getFullNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
     public function comments()
     {
         return $this->morphTo(Comment::class, 'commentable');

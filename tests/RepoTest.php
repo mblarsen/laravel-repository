@@ -12,12 +12,13 @@ class RepoTest extends TestCase
     public function can_create()
     {
         $user = Repository::for(User::class)->create([
-            'name' => 'Wowcrab',
+            'first_name' => 'Wow',
+            'last_name' => 'Crab',
             'email' => 'wow@example.com',
             'password' => 'seeekwed'
         ]);
         $this->assertNotNull($user);
-        $this->assertEquals('Wowcrab', $user->name);
+        $this->assertEquals('Wow', $user->first_name);
     }
 
     /** @test */
@@ -25,16 +26,17 @@ class RepoTest extends TestCase
     {
         $repository = Repository::for(User::class);
         $user = $repository->create([
-            'name' => 'Wowcrab',
+            'first_name' => 'Wow',
+            'last_name' => 'Crab',
             'email' => 'crab@example.com',
             'password' => 'seeekwed'
         ]);
 
         $user = $repository
-            ->update($user, ['name' => 'Mr. Crab'])
+            ->update($user, ['first_name' => 'Mr. Crab'])
             ->fresh();
 
-        $this->assertEquals('Mr. Crab', $user->name);
+        $this->assertEquals('Mr. Crab', $user->first_name);
     }
 
     /** @test */
@@ -43,7 +45,8 @@ class RepoTest extends TestCase
         $email = 'doomed@example.com';
         $repository = Repository::for(User::class);
         $user = $repository->create([
-            'name' => 'Wowcrab',
+            'first_name' => 'Wow',
+            'last_name' => 'Crab',
             'email' => $email,
             'password' => 'seeekwed'
         ]);

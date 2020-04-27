@@ -12,7 +12,8 @@ class SetupTest extends TestCase
     public function migration_works()
     {
         $user = User::create([
-            'name' => 'Wowcrab',
+            'first_name' => 'Wow',
+            'last_name' => 'Crab',
             'email' => 'wow@example.com',
             'password' => 'seeekwed'
         ]);

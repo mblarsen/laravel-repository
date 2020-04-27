@@ -19,9 +19,9 @@ class QueryTest extends TestCase
     {
         parent::setup();
 
-        $user_1 = User::firstOrCreate(['name' => 'foo', 'email' => 'foo@example.com', 'password' => 'seeekwed']);
-        $user_2 = User::firstOrCreate(['name' => 'bar', 'email' => 'bar@example.com', 'password' => 'seeekwed']);
-        $user_3 = User::firstOrCreate(['name' => 'mars', 'email' => 'mars@example.com', 'password' => 'seeekwed']);
+        $user_1 = User::firstOrCreate(['first_name' => 'foo', 'last_name' => 'jensen', 'email' => 'foo@example.com', 'password' => 'seeekwed']);
+        $user_2 = User::firstOrCreate(['first_name' => 'bar', 'last_name' => 'larsen',  'email' => 'bar@example.com', 'password' => 'seeekwed']);
+        $user_3 = User::firstOrCreate(['first_name' => 'mars', 'last_name' => 'jensen',  'email' => 'mars@example.com', 'password' => 'seeekwed']);
 
         $post_1 = Post::create([
             'title' => 'aliens', 'body' => 'Nothing interesting', 'user_id' => $user_1->id
@@ -38,6 +38,7 @@ class QueryTest extends TestCase
         $post_3->postMeta()->create(['version' => 1]);
         $post_3->comments()->create(['body' => 'crux', 'user_id' => $user_2->id, 'created_at' => now()->addMinutes(5)]);
     }
+
     /** @test */
     public function fetches_all()
     {
@@ -48,7 +49,7 @@ class QueryTest extends TestCase
 
         $this->assertEquals(
             ['foo', 'bar', 'mars'],
-            $users->pluck(['name'])->toArray()
+            $users->pluck(['first_name'])->toArray()
         );
     }
 
@@ -68,7 +69,7 @@ class QueryTest extends TestCase
         $this->assertEquals(1, $users->firstItem());
         $this->assertEquals(2, $users->lastItem());
 
-        $this->assertEquals(['foo', 'bar'], Arr::pluck($users->items(), ['name']));
+        $this->assertEquals(['foo', 'bar'], Arr::pluck($users->items(), ['first_name']));
 
         /** @var LengthAwarePaginator */
         $users = Repository::for(User::class, ArrayResourceContext::create([
@@ -81,7 +82,7 @@ class QueryTest extends TestCase
         $this->assertEquals(3, $users->firstItem());
         $this->assertEquals(3, $users->lastItem());
 
-        $this->assertEquals(['mars'], Arr::pluck($users->items(), ['name']));
+        $this->assertEquals(['mars'], Arr::pluck($users->items(), ['first_name']));
     }
 
     /** @test */
@@ -149,7 +150,7 @@ class QueryTest extends TestCase
     public function sort_asc()
     {
         $repository = Repository::for(User::class, ArrayResourceContext::create([
-            'sort_by' => 'name',
+            'sort_by' => 'first_name',
         ]));
 
         /** @var Collection */
@@ -162,7 +163,7 @@ class QueryTest extends TestCase
     public function sort_desc()
     {
         $repository = Repository::for(User::class, ArrayResourceContext::create([
-            'sort_by' => 'name',
+            'sort_by' => 'first_name',
             'sort_order' => 'desc',
         ]));
 
@@ -176,7 +177,7 @@ class QueryTest extends TestCase
     public function sort_default()
     {
         $repository = Repository::for(User::class)
-            ->setDefaultSort('name');
+            ->setDefaultSort('first_name');
 
         /** @var Collection */
         $users = $repository->all();
@@ -206,7 +207,7 @@ class QueryTest extends TestCase
         $repository = Repository::for(Post::class)
             ->setContext(ArrayResourceContext::create(
                 [
-                    'sort_by' => 'user.name',
+                    'sort_by' => 'user.first_name',
                 ]
             ));
         /** @var Collection */
