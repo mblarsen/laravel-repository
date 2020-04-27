@@ -17,15 +17,15 @@ Practically the repository class is a mix between a query builder and a reposito
 
 Features:
 
--   Get started with zero config.
+-   Get started with zero config. [See basic examples](#basic-examples)
 -   The usual suspects: `all`, `find`, `create`, `update`, `destroy`.
+-   Plus `allResources`, `findResource`, and so on to wrap in resources.
 -   `list()` function useful for `<select>` and autocompletes.
 -   Front-end and user driven. The request is the context for what gets included:
     -   filter query on model and relations
     -   include relations (all blocked by default)
     -   deal with paging transparently
     -   order models by their props or their relations props (with no custom SQL)
--   Works well with policies and json-resources if needed.
 
 This package includes one interfaces and and three classes for you to build on:
 
@@ -118,7 +118,7 @@ Some times you want to include certain relations by default. In addition to doin
 $relation->setDefaultWith(['comments']);
 ```
 
-_Aside: if you are building a public app (for your SPA or 3rd party) it is recommended that you wrap the result a `JsonResource`. This will give you control of what properties are exposed and will allow you to transform the data further._
+_Aside: if you are building a public app (for your SPA or 3rd party) it is recommended that you wrap the result a `JsonResource`. This will give you control of what properties are exposed and will allow you to transform the data further. [See resources section](#resources)._
 
 #### Filtering
 
@@ -228,6 +228,40 @@ public function index(PostRepository $repository)
 }
 ```
 
+### Resources
+
+If you are building a public app (for your SPA or 3rd party) it is recommended that you wrap the result a `JsonResource`. This will give you control of what properties are exposed and will allow you to transform the data further.
+
+Doing is really easy.
+
+```php
+// using base repository
+$repository->setResource(UserResource::class);
+
+// or extending
+protected $resource = UserResource::class;
+```
+
+Then you just use any of the API methods prepending `Resource` or `Resources` as shown here:
+
+```php
+$repository->allResources();
+$repository->findResource(3);
+$repository->update($user, ['name' => 'foo']);
+// and so on
+```
+
+If you implement a collection resource you can set that as the second arguments to the `setResource` method call:
+
+```php
+$repository->setResource(UserResource::class, UserResourceCollection::class);
+
+// or in class
+protected $resource_collection = UserResourceCollection::class
+```
+
+_Note: `list()` doesn't support resources. It didn't make any sense to me. You are welcome to change my mind._
+
 ### Testing
 
 ## API
@@ -249,6 +283,8 @@ When extending the base repository you may want to check out these additional fu
 -   [`modelQuery($query = null)`](#modelQuery)
 
 ### `all($query = null)`
+
+### `allResources($query = null)`
 
 <a name="all"></a>
 
@@ -276,17 +312,23 @@ Note: if a callable is used the mapping is performed in memory, while a string i
 
 ### `find($id, $query = null)`
 
+### `findResource($id, $query = null)`
+
 <a name="find"></a>
 
 Gets a single model. You can further narrow down the result by providing a start query. See exmaple in `all()`
 
 ### `create(array $data)`
 
+### `createResource(array $data)`
+
 <a name="create"></a>
 
 Typical Crud.
 
 ### `update(Model $model, array $data)`
+
+### `updateResource(Model $model, array $data)`
 
 <a name="update"></a>
 

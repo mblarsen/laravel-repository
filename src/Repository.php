@@ -2,27 +2,37 @@
 
 namespace Mblarsen\LaravelRepository;
 
+use BadMethodCallException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator as PaginationLengthAwarePaginator;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Mblarsen\LaravelRepository\Traits\Filters;
 use Mblarsen\LaravelRepository\Traits\IncludesRelations;
 use Mblarsen\LaravelRepository\Traits\Sorts;
+use Mblarsen\LaravelRepository\Traits\WrapsInResource;
 
 class Repository
 {
     use Filters;
     use IncludesRelations;
     use Sorts;
+    use WrapsInResource;
 
     const WITH_ALLOW_ALL = ['*'];
     const WITH_ALLOW_NONE = [];
 
     /** @var string */
     protected $model;
+
+    /** @var string */
+    protected $resource;
+
+    /** @var string */
+    protected $resource_collection;
 
     /** @var ResourceContext $resource_context */
     protected $resource_context;
@@ -55,6 +65,21 @@ class Repository
             $repository->setContext($context);
         }
         return $repository;
+    }
+
+    public function __call($name, $arguments)
+    {
+        if (Str::endsWith($name, 'Resource') || Str::endsWith($name, 'Resources')) {
+            $name_without_resource = Str::before($name, 'Resource');
+            $valid_names = ['all', 'find', 'create', 'update', 'destroy'];
+            if (in_array($name_without_resource, $valid_names)) {
+                return $this->wrapInResource(
+                    call_user_func_array([&$this, $name_without_resource], $arguments)
+                );
+            }
+        }
+
+        throw new BadMethodCallException();
     }
 
     /**
