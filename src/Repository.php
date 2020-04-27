@@ -5,6 +5,7 @@ namespace Mblarsen\LaravelRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
 use Mblarsen\LaravelRepository\Traits\Filters;
 use Mblarsen\LaravelRepository\Traits\IncludesRelations;
 use Mblarsen\LaravelRepository\Traits\Sorts;
@@ -94,7 +95,9 @@ class Repository
     {
         $query = $this->modelQuery($query);
 
-        return $this->applyWith($query)
+        return $this
+            ->validateQurey($query)
+            ->applyWith($query)
             ->applySort($query)
             ->applyFilters($query)
             ->paginate($query);
@@ -104,7 +107,9 @@ class Repository
     {
         $query = $this->modelQuery($query);
 
-        $this->applyWith($query);
+        $this
+            ->validateQurey($query)
+            ->applyWith($query);
 
         $query->whereId($id);
 
@@ -130,6 +135,18 @@ class Repository
     protected function modelQuery($query = null)
     {
         return $query ?? $this->model::query();
+    }
+
+    protected function validateQurey(Builder $query)
+    {
+        $model = $this->model;
+        $query_model = get_class($query->getModel());
+
+        if ($model !== $query_model) {
+            throw new InvalidArgumentException("The input query and model does not match");
+        }
+
+        return $this;
     }
 
     /**

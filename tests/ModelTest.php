@@ -3,10 +3,12 @@
 namespace Mblarsen\LaravelRepository\Tests;
 
 use Illuminate\Database\Eloquent\Builder;
+use InvalidArgumentException;
 use Mblarsen\LaravelRepository\ArrayResourceContext;
 use Mblarsen\LaravelRepository\Repository;
 use Mblarsen\LaravelRepository\RequestResourceContext;
 use Mblarsen\LaravelRepository\ResourceContext;
+use Mblarsen\LaravelRepository\Tests\Models\Post;
 use Mblarsen\LaravelRepository\Tests\Models\User;
 use ReflectionClass;
 
@@ -43,6 +45,14 @@ class ModelTest extends TestCase
     public function repository_resolves()
     {
         $this->assertInstanceOf(RequestResourceContext::class, resolve(ResourceContext::class));
+    }
+
+    /** @test */
+    public function throw_if_models_does_not_match()
+    {
+        $repository = Repository::for(User::class);
+        $this->expectException(InvalidArgumentException::class);
+        $repository->all(Post::query());
     }
 
     protected function getProperty(&$object, $property)
