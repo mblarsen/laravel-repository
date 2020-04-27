@@ -19,6 +19,7 @@ Features:
 
 -   Get started with zero config.
 -   The usual suspects: `all`, `find`, `create`, `update`, `destroy`.
+-   `list()` function useful for `<select>` and autocompletes.
 -   Front-end and user driven. The request is the context for what gets included:
     -   filter query on model and relations
     -   include relations (all blocked by default)
