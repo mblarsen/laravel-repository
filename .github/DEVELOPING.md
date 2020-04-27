@@ -1,4 +1,6 @@
-# Contributing
+# Developing
+
+Please first read [CONTRIBUTING](.github/CONTRIBUTING.md).
 
 ## Running tests
 

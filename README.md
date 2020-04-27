@@ -408,7 +408,9 @@ This package was generated using the [Laravel Package Boilerplate](https://larav
 
 ## Contributing
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
+
+Please see [DEVLOPING](.github/DEVLOPING.md) for help getting started.
 
 ## Contributors ✨
 
