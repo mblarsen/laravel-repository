@@ -281,6 +281,7 @@ _Note: `list()` doesn't support resources. It didn't make any sense to me. You a
 When extending the base repository you may want to check out these additional functions:
 
 -   [`modelQuery($query = null)`](#modelQuery)
+-   [`register()`](#register)
 
 ### `all($query = null)`
 
@@ -373,6 +374,23 @@ See example code.
 <a name="modelQuery"></a>
 
 See example code.
+
+### `register()`
+
+<a name="register"></a>
+
+Called when the repository is created. This is useful setting up this `default_list_column` function for a sub-classed repository.
+
+```php
+protected function register()
+{
+    $this->default_list_column = function ($model) {
+        return $model->full_name;
+    };
+}
+```
+
+See [test case](tests/ExtensionTest.php).
 
 ### `interface ResourceContext`
 

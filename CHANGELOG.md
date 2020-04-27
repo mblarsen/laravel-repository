@@ -4,6 +4,9 @@ All notable changes to `laravel-repository` will be documented in this file
 
 ## next
 
+-   feat: add `default_list_column`
+-   feat: add `register()` method for sub-classes
+
 ## 0.4.0
 
 -   feat: support for JsonResource (see [README resources section](README.md#resources)

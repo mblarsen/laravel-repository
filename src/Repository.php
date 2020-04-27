@@ -43,9 +43,18 @@ class Repository
     /** @var string $default_sort_order */
     protected $default_sort_order = 'asc';
 
+    /** @var string|function $list_column */
+    protected $default_list_column;
+
     public function __construct(ResourceContext $resource_context)
     {
         $this->resource_context = $resource_context;
+        $this->register();
+    }
+
+    protected function register()
+    {
+        // Allows you to set default_list_column
     }
 
     /**
@@ -155,6 +164,8 @@ class Repository
     public function list($column = null, $query = null)
     {
         $query = $this->modelQuery($query);
+
+        $column = $column ?: $this->default_list_column;
 
         if (is_string($column)) {
             $query->select([$query->getModel()->getKeyName() . " AS value", "$column AS label"]);

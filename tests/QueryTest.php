@@ -132,7 +132,7 @@ class QueryTest extends TestCase
     public function fetches_list_with_callback()
     {
         /** @var Collection $posts */
-        $posts = Repository::for(User::class)->list(function ($user) {
+        $users = Repository::for(User::class)->list(function ($user) {
             return $user->full_name;
         });
 
@@ -142,7 +142,7 @@ class QueryTest extends TestCase
                 ['value' => 2, 'label' => 'bar larsen'],
                 ['value' => 3, 'label' => 'mars jensen']
             ],
-            $posts->toArray()
+            $users->toArray()
         );
     }
 
@@ -150,7 +150,7 @@ class QueryTest extends TestCase
     public function fetches_list_paginated_with_callback()
     {
         /** @var LengthAwarePaginator */
-        $posts = Repository::for(
+        $users = Repository::for(
             User::class,
             ArrayResourceContext::create(['page' => 1, 'per_page' => 2])
         )
@@ -163,7 +163,7 @@ class QueryTest extends TestCase
                 ['value' => 1, 'label' => 'foo jensen'],
                 ['value' => 2, 'label' => 'bar larsen'],
             ],
-            collect($posts->items())->toArray()
+            collect($users->items())->toArray()
         );
     }
 
