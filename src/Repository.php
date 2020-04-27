@@ -28,12 +28,6 @@ class Repository
     /** @var string */
     protected $model;
 
-    /** @var string */
-    protected $resource;
-
-    /** @var string */
-    protected $resource_collection;
-
     /** @var ResourceContext $resource_context */
     protected $resource_context;
 

@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 trait WrapsInResource
 {
+    /** @var string */
+    protected $resource;
+
+    /** @var string */
+    protected $resource_collection;
+
     public function setResource(string $resource, string $resource_collection = null)
     {
         $this->resource = $resource;
