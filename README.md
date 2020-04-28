@@ -285,6 +285,26 @@ _Note: `list()` doesn't support resources. It didn't make any sense to me. You a
 
 ### Testing
 
+When it comes to testing the `ArrayResourceContext` comes in handy. It lets you
+pass in context values directly.
+
+```php
+$repository = Repository::for(User::class, ArrayResourceContext::create([
+    'filters' => [
+        'status' => 'approved',
+    ]
+]));
+
+// or shorter
+
+$repository = Repository::for(User::class, [
+    'filters' => [
+        'status' => 'approved',
+    ]
+]);
+
+```
+
 ## API
 
 -   [`all($query = null)`](#all)
