@@ -151,6 +151,27 @@ title|name|email=cra
 
 A different way to filter is to provider a query builder to `all()` and `find()`. See examples in [the API](#api).
 
+#### Transforming `RequestResourceContext`
+
+You cannot modify the request context directly, but you have the option to convert it to an `ArrayResourceContext`.
+
+```
+public function index(UserRepository $repository)
+{
+    $repository->setContext(
+        ArrayResourceContext::create(
+            $repository->getContext()->toArray()
+        )
+            ->merge([
+                'filters' => ['status' => 'approved']
+            ])
+            ->exclude(['page'])
+    );
+}
+```
+
+Note that `toArray()` returns a full context. Including the defaults for `page` and `per_page`. Use `exclude()` remove them from the ArrayResourceContext.
+
 ### Custom repositories
 
 Many of your models will likely not need as custom (sub-classed) repository.
