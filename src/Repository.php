@@ -59,13 +59,20 @@ class Repository
 
     /**
      * Creates a new repository for a model.
+     *
+     * @param string $model model name
+     * @param array|ResourceContext $context
      */
-    public static function for(string $model, ResourceContext $context = null): self
+    public static function for(string $model, $context = null): self
     {
         $repository = resolve(static::class);
         $repository->setModel($model);
         if ($context) {
-            $repository->setContext($context);
+            $repository->setContext(
+                is_array($context)
+                    ? ArrayResourceContext::create($context)
+                    : $context
+            );
         }
         return $repository;
     }
