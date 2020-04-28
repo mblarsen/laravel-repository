@@ -4,6 +4,8 @@ All notable changes to `laravel-repository` will be documented in this file
 
 ## next
 
+## 0.6.0
+
 -   feat: pass array to `Repository::for()` without the need to specify `ArrayResourceContext`
 
 ## 0.5.0
