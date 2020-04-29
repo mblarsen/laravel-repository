@@ -13,7 +13,6 @@ class RequestResourceContext implements ResourceContext
 
     public function __construct()
     {
-        /** @var Request */
         $this->request = request();
     }
 
