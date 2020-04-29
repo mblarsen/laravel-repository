@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Mblarsen\LaravelRepository\Repository;
 use Mblarsen\LaravelRepository\Tests\Models\User;
 
-class RepoTest extends TestCase
+class CrudTest extends TestCase
 {
     /** @test */
     public function can_create()
