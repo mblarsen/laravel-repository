@@ -4,6 +4,8 @@ All notable changes to `laravel-repository` will be documented in this file
 
 ## next
 
+-   feat: list() called without column param will attempt to use default sort by.
+
 ## 0.6.0
 
 -   feat: pass array to `Repository::for()` without the need to specify `ArrayResourceContext`

@@ -172,7 +172,9 @@ class Repository
     {
         $query = $this->modelQuery($query);
 
-        $column = $column ?: $this->default_list_column;
+        $column = $column
+            ?: $this->default_list_column
+            ?: $this->default_sort_by;
 
         if (is_string($column)) {
             $query->select([$query->getModel()->getKeyName() . " AS value", "$column AS label"]);

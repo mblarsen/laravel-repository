@@ -103,6 +103,24 @@ class QueryTest extends TestCase
     }
 
     /** @test */
+    public function fetches_list_default_to_sort_by()
+    {
+        /** @var Collection $posts */
+        $posts = Repository::for(Post::class)
+            ->setDefaultSort('title')
+            ->list();
+
+        $this->assertEquals(
+            [
+                ['value' => 1, 'label' => 'aliens'],
+                ['value' => 3, 'label' => 'boats'],
+                ['value' => 2, 'label' => 'fish'],
+            ],
+            $posts->toArray()
+        );
+    }
+
+    /** @test */
     public function fetches_list_paginated()
     {
         /** @var LengthAwarePaginator */

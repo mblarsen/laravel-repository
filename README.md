@@ -344,11 +344,13 @@ public function index(UserRepository $user_repository)
 }
 ```
 
-### `list(string|callabel $column, $query = null)`
+### `list(string|callabel $column = null, $query = null)`
 
 <a name="list"></a>
 
 Produces a result suitable for selects, lists, and autocomplete. All entries that has a 'value' and a 'label' key.
+
+If `$column` is omitted the default sort by is used. In many cases they'll be the same anyway.
 
 Note: if a callable is used the mapping is performed in memory, while a string is done in the database layer.
 
