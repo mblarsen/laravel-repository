@@ -15,6 +15,17 @@ use Mblarsen\LaravelRepository\Traits\IncludesRelations;
 use Mblarsen\LaravelRepository\Traits\Sorts;
 use Mblarsen\LaravelRepository\Traits\WrapsInResource;
 
+/**
+ * @method allQuery($query = null): Builder
+ * @method allResources($query = null): \Illuminate\Http\Resources\Json\ResourceCollection
+ * @method createQuery(array $data): JsonBuilder
+ * @method createResource(array $data): JsonResource
+ * @method findQuery($id, $query = null): Builder
+ * @method findResource($id, $query = null): JsonResource
+ * @method listQuery($column = null, $query = null): Builder
+ * @method updateQuery(Model $model, array $data): Builder
+ * @method updateResource(Model $model, array $data): JsonResource
+ */
 class Repository
 {
     use Filters;
