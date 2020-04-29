@@ -1,15 +1,9 @@
 build:
   nodes:
     analysis:
-      services:
-        mysql: 5.7
       tests:
         override:
           - php-scrutinizer-run
-          - command: composer run-script test
-            coverage:
-              file: build/logs/clover.xml
-              format: clover
 
 filter:
   excluded_paths: [tests/*]
@@ -30,3 +24,5 @@ checks:
     fix_identation_4spaces: true
     fix_doc_comments: true
 
+tools:
+  external_code_coverage: true
