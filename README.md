@@ -27,7 +27,7 @@ Features:
     -   deal with paging transparently
     -   order models by their props or their relations props (with no custom SQL)
 
-This package includes one interfaces and and three classes for you to build on:
+This package includes one interfaces and three classes for you to build on:
 
 -   `Repository` class, to use as is or extend for your model needs.
 -   `ResourceContext` interface, provides data to the repository.
@@ -94,7 +94,7 @@ That is:
 -   `filters[title]=laravel` search for title in the posts name
 
 Since relations are disallowed by default nothing requests to include are
-ignored. But once we set that up yoo will be able to request relations as well:
+ignored. But once we set that up your will be able to request relations as well:
 
 -   `with[]=ads&with[]comments`, will include the relations `ads` and `comments`.
 
@@ -118,7 +118,7 @@ Some times you want to include certain relations by default. In addition to doin
 $relation->setDefaultWith(['comments']);
 ```
 
-_Aside: if you are building a public app (for your SPA or 3rd party) it is recommended that you wrap the result a `JsonResource`. This will give you control of what properties are exposed and will allow you to transform the data further. [See resources section](#resources)._
+_Aside: if you are building a public api (for your SPA or 3rd party) it is recommended that you wrap the result a `JsonResource`. This will give you control of what properties are exposed and will allow you to transform the data further. [See resources section](#resources)._
 
 #### Filtering
 
@@ -170,15 +170,15 @@ public function index(UserRepository $repository)
 }
 ```
 
-Note that `toArray()` returns a full context. Including the defaults for `page` and `per_page`. Use `exclude()` remove them from the ArrayResourceContext.
+Note that `toArray()` returns a full context. Including the defaults for `page` and `per_page`. Use `exclude()` remove them from the `ArrayResourceContext`.
 
 ### Custom repositories
 
 Many of your models will likely not need as custom (sub-classed) repository.
 But often your core models have more logic associated with them. In that case
-it is adviced do extend the base repository.
+it is advised do extend the base repository.
 
-All the properties except the `model` can be omitted. Well, you can omited the
+All the properties except the `model` can be omitted. Well, you can omitted the
 model too but that is kind of pointless.
 
 Disclaimer: the example's purpose is to demo the flexibility not and isn't very
@@ -251,7 +251,7 @@ public function index(PostRepository $repository)
 
 ### Resources
 
-If you are building a public app (for your SPA or 3rd party) it is recommended that you wrap the result a `JsonResource`. This will give you control of what properties are exposed and will allow you to transform the data further.
+If you are building a public api (for your SPA or 3rd party) it is recommended that you wrap the result a `JsonResource`. This will give you control of what properties are exposed and will allow you to transform the data further.
 
 Doing is really easy.
 
@@ -268,8 +268,8 @@ Then you just use any of the API methods prepending `Resource` or `Resources` as
 ```php
 $repository->allResources();
 $repository->findResource(3);
-$repository->update($user, ['name' => 'foo']);
-// and so on
+$repository->createResource(['name' => 'foo']);
+$repository->updateResource($user, ['name' => 'foo']);
 ```
 
 If you implement a collection resource you can set that as the second arguments to the `setResource` method call:
