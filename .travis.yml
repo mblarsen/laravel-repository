@@ -22,4 +22,4 @@ script:
   - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
 
 after_script:
-  - php vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover --access-token="${SCRUTINIZER_KEY}"
+  - wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover --access-token="${SCRUTINIZER_KEY}"
