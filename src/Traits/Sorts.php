@@ -10,6 +10,12 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 
 trait Sorts
 {
+    /** @var string $default_sort_by */
+    protected $default_sort_by;
+
+    /** @var string $default_sort_order */
+    protected $default_sort_order = 'asc';
+
     public function setDefaultSort(string $by, string $order = 'asc')
     {
         $this->default_sort_by = $by;

@@ -4,6 +4,11 @@ namespace Mblarsen\LaravelRepository\Traits;
 
 trait IncludesRelations
 {
+    /** @var array $allowed_with */
+    protected $allowed_with = [];
+
+    /** @var array $default_with */
+    protected $default_with = [];
 
     public function setAllowedWith(array $allowed)
     {

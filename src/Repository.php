@@ -39,19 +39,7 @@ class Repository
     /** @var ResourceContext $resource_context */
     protected $resource_context;
 
-    /** @var array $allowed_with */
-    protected $allowed_with = self::WITH_ALLOW_NONE;
-
-    /** @var array $default_with */
-    protected $default_with = [];
-
-    /** @var string $default_sort_by */
-    protected $default_sort_by;
-
-    /** @var string $default_sort_order */
-    protected $default_sort_order = 'asc';
-
-    /** @var string|function $list_column */
+    /** @var string|callable $list_column */
     protected $default_list_column;
 
     /** @var bool $only_query */
@@ -76,6 +64,7 @@ class Repository
      */
     public static function for(string $model, $context = null): self
     {
+        /** @var Repository $repository */
         $repository = resolve(static::class);
         $repository->setModel($model);
         if ($context) {
@@ -206,7 +195,7 @@ class Repository
      *
      * @param callable|string $column
      * @param Builder $query
-     * @return Collection|Builder
+     * @return Collection|Builder|LengthAwarePaginator
      */
     public function list($column = null, $query = null)
     {
