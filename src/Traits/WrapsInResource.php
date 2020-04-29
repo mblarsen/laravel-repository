@@ -19,7 +19,7 @@ trait WrapsInResource
         $this->resource_collection = $resource_collection;
     }
 
-    public function wrapInResource($value)
+    private function wrapInResource($value)
     {
         if (!$this->resource) {
             throw new Exception("You must first set a resource class");

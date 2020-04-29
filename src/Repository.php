@@ -93,28 +93,41 @@ class Repository
 
     public function __call($name, $arguments)
     {
-        if (Str::endsWith($name, 'Resource') || Str::endsWith($name, 'Resources')) {
-            $short_name = Str::before($name, 'Resource');
-            $valid_names = ['all', 'find', 'create', 'update', 'destroy'];
-            if (in_array($short_name, $valid_names)) {
-                return $this->wrapInResource(
-                    call_user_func_array([&$this, $short_name], $arguments)
-                );
-            }
-        } elseif (Str::endsWith($name, 'Query')) {
-            $short_name = Str::before($name, 'Query');
-            $valid_names = ['all', 'find', 'list'];
-            if (in_array($short_name, $valid_names)) {
-                try {
-                    $this->only_query = true;
-                    return call_user_func_array([&$this, $short_name], $arguments);
-                } finally {
-                    $this->only_query = false;
-                }
+        if ($this->canWrapInResource($name)) {
+            return $this->wrapInResource(
+                call_user_func_array([&$this, Str::before($name, 'Resource')], $arguments)
+            );
+        }
+
+        if ($this->canReturnAsQuery($name)) {
+            try {
+                $this->only_query = true;
+                return call_user_func_array([&$this, Str::before($name, 'Query')], $arguments);
+            } finally {
+                $this->only_query = false;
             }
         }
 
         throw new BadMethodCallException();
+    }
+
+    private function canReturnAsQuery($name)
+    {
+        return Str::endsWith($name, 'Query') &&
+            in_array(
+                Str::before($name, 'Query'),
+                ['all', 'find', 'list']
+            );
+    }
+
+    private function canWrapInResource($name)
+    {
+        return (Str::endsWith($name, 'Resource') ||
+            Str::endsWith($name, 'Resources')) &&
+            in_array(
+                Str::before($name, 'Resource'),
+                ['all', 'find', 'create', 'update', 'destroy']
+            );
     }
 
     /**
