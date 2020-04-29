@@ -13,7 +13,8 @@ The goal of this repository implementation:
 2. avoid boilerplate for paged, filtered, and sorted resources
 3. let you be in control of the query for special cases
 
-Practically the repository class is a mix between a query builder and a repository.
+Practically the repository class is a mix between a query builder and a
+repository.
 
 Features:
 
@@ -42,15 +43,26 @@ You can install the package via composer:
 composer require mblarsen/laravel-repository
 ```
 
-The repository relies on a `ResourceContext` to provide it with the necessary values to be able to sort, filter, paginate and so on. This is handled automatically, but it means that you should let Laravel's depency injection provide a repository for you. This is espesically powerfull if you extende the base repository class.
+The repository relies on a `ResourceContext` to provide it with the necessary
+values to be able to sort, filter, paginate and so on. This is handled
+automatically, but it means that you should let Laravel's depency injection
+provide a repository for you. This is espesically powerfull if you extende the
+base repository class.
 
-The default context that is used is the `RequestResourceContext` which is automatically injected into the repository. This is espesically useful when you are building public or private APIs to serve a front-end. However, another implementation is provided that lets you provide the control to a higher degree. This is the `ArrayResourceContext`. This implementation is useful for testing or for when you build a traditional Laravel application using Blade views.
+The default context that is used is the `RequestResourceContext` which is
+automatically injected into the repository. This is espesically useful when you
+are building public or private APIs to serve a front-end. However, another
+implementation is provided that lets you provide the control to a higher
+degree. This is the `ArrayResourceContext`. This implementation is useful for
+testing or for when you build a traditional Laravel application using Blade
+views.
 
 The following examples a biased toward use of the `RequestResourceContext`.
 
 ### Basic examples
 
-The base repository knows nothing of your models, so unless you sub-class the repository, you must specify what model you are querying.
+The base repository knows nothing of your models, so unless you sub-class the
+repository, you must specify what model you are querying.
 
 ```php
 // Using Laravel's resolve() helper
@@ -68,7 +80,7 @@ public function index(Repository $repository)
 }
 ```
 
-or in case of a custom repository:
+... or in case of a custom repository:
 
 ```php
 public function index(PostRepository $repository)
@@ -100,33 +112,44 @@ ignored. But once we set that up your will be able to request relations as well:
 
 ### Repository features
 
-You can define the behaviour of the repository using a chained API. Be sure to check the [full API](#api) below.
+You can define the behaviour of the repository using a chained API. Be sure to
+check the [full API](#api) below.
 
 #### Control what relations to include
 
 Query: `with` or `with[]`
 
-The repository will include any relations specified in `with` based on what is allowed. That ensures that the client cannot request data that you have not allowed.
+The repository will include any relations specified in `with` based on what is
+allowed. That ensures that the client cannot request data that you have not
+allowed.
 
 ```php
 $repository->setAllowedWith(['comments']);
 ```
 
-Some times you want to include certain relations by default. In addition to doing that on the model directly the Laravel way you also have the option to set which on the repository. This allows you to control the list of relation per action in the controller.
+Some times you want to include certain relations by default. In addition to
+doing that on the model directly the Laravel way you also have the option to
+set which on the repository. This allows you to control the list of relation
+per action in the controller.
 
 ```php
 $relation->setDefaultWith(['comments']);
 ```
 
-_Aside: if you are building a public api (for your SPA or 3rd party) it is recommended that you wrap the result a `JsonResource`. This will give you control of what properties are exposed and will allow you to transform the data further. [See resources section](#resources)._
+_Aside: if you are building a public api (for your SPA or 3rd party) it is
+recommended that you wrap the result a `JsonResource`. This will give you
+control of what properties are exposed and will allow you to transform the data
+further. [See resources section](#resources)._
 
 #### Filtering
 
 Query: `filter[key]=value`
 
-This package provides a search like functionality through its filters. Under the hood it uses `LIKE`, ie. `%value%`.
+This package provides a search like functionality through its filters. Under
+the hood it uses `LIKE`, ie. `%value%`.
 
-The key doesn't have to be properties on the main model. It can be relation properties as well. Here are some examples:
+The key doesn't have to be properties on the main model. It can be relation
+properties as well. Here are some examples:
 
 ```php
 // Search on model property
@@ -149,11 +172,13 @@ And lastly you can choose to search for the same value in multiple properties:
 title|name|email=cra
 ```
 
-A different way to filter is to provider a query builder to `all()` and `find()`. See examples in [the API](#api).
+A different way to filter is to provider a query builder to `all()` and
+`find()`. See examples in [the API](#api).
 
 #### Transforming `RequestResourceContext`
 
-You cannot modify the request context directly, but you have the option to convert it to an `ArrayResourceContext`.
+You cannot modify the request context directly, but you have the option to
+convert it to an `ArrayResourceContext`.
 
 ```
 public function index(UserRepository $repository)
@@ -170,7 +195,8 @@ public function index(UserRepository $repository)
 }
 ```
 
-Note that `toArray()` returns a full context. Including the defaults for `page` and `per_page`. Use `exclude()` remove them from the `ArrayResourceContext`.
+Note that `toArray()` returns a full context. Including the defaults for `page`
+and `per_page`. Use `exclude()` remove them from the `ArrayResourceContext`.
 
 ### Custom repositories
 
@@ -251,7 +277,9 @@ public function index(PostRepository $repository)
 
 ### Resources
 
-If you are building a public api (for your SPA or 3rd party) it is recommended that you wrap the result a `JsonResource`. This will give you control of what properties are exposed and will allow you to transform the data further.
+If you are building a public api (for your SPA or 3rd party) it is recommended
+that you wrap the result a `JsonResource`. This will give you control of what
+properties are exposed and will allow you to transform the data further.
 
 Doing is really easy.
 
@@ -263,7 +291,8 @@ $repository->setResource(UserResource::class);
 protected $resource = UserResource::class;
 ```
 
-Then you just use any of the API methods prepending `Resource` or `Resources` as shown here:
+Then you just use any of the API methods prepending `Resource` or `Resources`
+as shown here:
 
 ```php
 $repository->allResources();
@@ -272,7 +301,8 @@ $repository->createResource(['name' => 'foo']);
 $repository->updateResource($user, ['name' => 'foo']);
 ```
 
-If you implement a collection resource you can set that as the second arguments to the `setResource` method call:
+If you implement a collection resource you can set that as the second arguments
+to the `setResource` method call:
 
 ```php
 $repository->setResource(UserResource::class, UserResourceCollection::class);
@@ -281,7 +311,8 @@ $repository->setResource(UserResource::class, UserResourceCollection::class);
 protected $resource_collection = UserResourceCollection::class
 ```
 
-_Note: `list()` doesn't support resources. It didn't make any sense to me. You are welcome to change my mind._
+_Note: `list()` doesn't support resources. It didn't make any sense to me. You
+are welcome to change my mind._
 
 ### Testing
 
@@ -319,7 +350,8 @@ $repository = Repository::for(User::class, [
 -   [`setDefaultSort(string $by, string $order = 'asc')`](#setDefaulSort)
 -   [`setDefaultWith(array $with)`](#setDefaultWith)
 
-When extending the base repository you may want to check out these additional functions:
+When extending the base repository you may want to check out these additional
+functions:
 
 -   [`modelQuery($query = null)`](#modelQuery)
 -   [`register()`](#register)
@@ -344,15 +376,20 @@ public function index(UserRepository $user_repository)
 }
 ```
 
+Use with `Resources` suffix to return as a resource collection.
+
 ### `list(string|callabel $column = null, $query = null)`
 
 <a name="list"></a>
 
-Produces a result suitable for selects, lists, and autocomplete. All entries that has a 'value' and a 'label' key.
+Produces a result suitable for selects, lists, and autocomplete. All entries
+that has a 'value' and a 'label' key.
 
-If `$column` is omitted the default sort by is used. In many cases they'll be the same anyway.
+If `$column` is omitted the default sort by is used. In many cases they'll be
+the same anyway.
 
-Note: if a callable is used the mapping is performed in memory, while a string is done in the database layer.
+Note: if a callable is used the mapping is performed in memory, while a string
+is done in the database layer.
 
 ### `find($id, $query = null)`
 
@@ -360,7 +397,10 @@ Note: if a callable is used the mapping is performed in memory, while a string i
 
 <a name="find"></a>
 
-Gets a single model. You can further narrow down the result by providing a start query. See exmaple in `all()`
+Gets a single model. You can further narrow down the result by providing a
+start query. See example in `all()`
+
+Use with `Resource` suffix to return as a resource.
 
 ### `create(array $data)`
 
@@ -368,7 +408,7 @@ Gets a single model. You can further narrow down the result by providing a start
 
 <a name="create"></a>
 
-Typical Crud.
+Typical crUd. Use with `Resource` suffix to return as a resource.
 
 ### `update(Model $model, array $data)`
 
@@ -376,7 +416,7 @@ Typical Crud.
 
 <a name="update"></a>
 
-Typical crUd.
+Typical crUd. Use with `Resource` suffix to return as a resource.
 
 ### `destroy(Model $model)`
 
@@ -422,7 +462,8 @@ See example code.
 
 <a name="register"></a>
 
-Called when the repository is created. This is useful setting up this `default_list_column` function for a sub-classed repository.
+Called when the repository is created. This is useful setting up this
+`default_list_column` function for a sub-classed repository.
 
 ```php
 protected function register()
@@ -443,11 +484,13 @@ See [ResourceContext](src/ResourceContext.php) implementation.
 
 ## Changelog
 
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
+Please see [CHANGELOG](CHANGELOG.md) for more information what has changed
+recently.
 
 ## Security
 
-If you discover any security related issues, please email m19n@pm.me instead of using the issue tracker.
+If you discover any security related issues, please email m19n@pm.me instead of
+using the issue tracker.
 
 ## Prior work
 
