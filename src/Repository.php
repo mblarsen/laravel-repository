@@ -46,6 +46,9 @@ class Repository
     /** @var string|function $list_column */
     protected $default_list_column;
 
+    /** @var bool $only_query */
+    protected $only_query = false;
+
     public function __construct(ResourceContext $resource_context)
     {
         $this->resource_context = $resource_context;
@@ -80,12 +83,23 @@ class Repository
     public function __call($name, $arguments)
     {
         if (Str::endsWith($name, 'Resource') || Str::endsWith($name, 'Resources')) {
-            $name_without_resource = Str::before($name, 'Resource');
+            $short_name = Str::before($name, 'Resource');
             $valid_names = ['all', 'find', 'create', 'update', 'destroy'];
-            if (in_array($name_without_resource, $valid_names)) {
+            if (in_array($short_name, $valid_names)) {
                 return $this->wrapInResource(
-                    call_user_func_array([&$this, $name_without_resource], $arguments)
+                    call_user_func_array([&$this, $short_name], $arguments)
                 );
+            }
+        } elseif (Str::endsWith($name, 'Query')) {
+            $short_name = Str::before($name, 'Query');
+            $valid_names = ['all', 'find', 'list'];
+            if (in_array($short_name, $valid_names)) {
+                try {
+                    $this->only_query = true;
+                    return call_user_func_array([&$this, $short_name], $arguments);
+                } finally {
+                    $this->only_query = false;
+                }
             }
         }
 
@@ -126,18 +140,23 @@ class Repository
      * The ResourceContext determines if the result is a Collection or a
      * LengthAwarePaginator.
      *
-     * @return LengthAwarePaginator|Collection
+     * @return LengthAwarePaginator|Collection|Builder
      */
     public function all($query = null)
     {
         $query = $this->modelQuery($query);
 
-        return $this
+        $this
             ->validateQurey($query)
             ->applyWith($query)
             ->applySort($query)
-            ->applyFilters($query)
-            ->execute($query);
+            ->applyFilters($query);
+
+        if ($this->only_query) {
+            return $query;
+        }
+
+        return $this->execute($query);
     }
 
     /**
@@ -166,7 +185,7 @@ class Repository
      *
      * @param callable|string $column
      * @param Builder $query
-     * @return Collection
+     * @return Collection|Builder
      */
     public function list($column = null, $query = null)
     {
@@ -191,9 +210,13 @@ class Repository
         if (is_callable($column)) {
             $all = $this->all($query);
 
+            if ($all instanceof Builder) {
+                return $all;
+            }
             if ($all instanceof Collection) {
-                $all = $all->map($mapper);
-            } elseif ($all instanceof LengthAwarePaginator) {
+                return $all->map($mapper);
+            }
+            if ($all instanceof LengthAwarePaginator) {
                 $items = collect($all->items())->map($mapper)->toArray();
                 $all = new PaginationLengthAwarePaginator(
                     $items,
@@ -201,15 +224,17 @@ class Repository
                     $all->perPage(),
                     $all->currentPage()
                 );
+                return $all;
             }
-
-            return $all;
         }
 
         throw new InvalidArgumentException("'column' should be a string or callable");
     }
 
-    public function find($id, $query = null): Model
+    /**
+     * @return Model|Builder
+     */
+    public function find($id, $query = null)
     {
         $query = $this->modelQuery($query);
 
@@ -218,6 +243,10 @@ class Repository
             ->applyWith($query);
 
         $query->whereId($id);
+
+        if ($this->only_query) {
+            return $query;
+        }
 
         return $query->firstOrFail();
     }

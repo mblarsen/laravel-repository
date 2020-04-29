@@ -4,6 +4,8 @@ All notable changes to `laravel-repository` will be documented in this file
 
 ## next
 
+-   feat: similar to `Resource` methods you can use `Query` to get the query
+    builder instead of the result.
 -   feat: list() called without column param will attempt to use default sort by.
 
 ## 0.6.0

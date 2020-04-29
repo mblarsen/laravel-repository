@@ -358,6 +358,8 @@ functions:
 
 ### `all($query = null)`
 
+### `allQuery($query = null)`
+
 ### `allResources($query = null)`
 
 <a name="all"></a>
@@ -376,9 +378,13 @@ public function index(UserRepository $user_repository)
 }
 ```
 
+Use with `Query` suffix to return as a query builder.
+
 Use with `Resources` suffix to return as a resource collection.
 
 ### `list(string|callabel $column = null, $query = null)`
+
+### `listQuery(string|callabel $column = null, $query = null)`
 
 <a name="list"></a>
 
@@ -388,10 +394,15 @@ that has a 'value' and a 'label' key.
 If `$column` is omitted the default sort by is used. In many cases they'll be
 the same anyway.
 
+Use with `Query` suffix to return as a query builder.
+
 Note: if a callable is used the mapping is performed in memory, while a string
-is done in the database layer.
+is done in the database layer. Also note that when using the listQuery variant
+the callable is not reflected.
 
 ### `find($id, $query = null)`
+
+### `findQuery($id, $query = null)`
 
 ### `findResource($id, $query = null)`
 
@@ -399,6 +410,8 @@ is done in the database layer.
 
 Gets a single model. You can further narrow down the result by providing a
 start query. See example in `all()`
+
+Use with `Query` suffix to return as a query builder.
 
 Use with `Resource` suffix to return as a resource.
 
@@ -412,11 +425,11 @@ Typical crUd. Use with `Resource` suffix to return as a resource.
 
 ### `update(Model $model, array $data)`
 
-### `updateResource(Model $model, array $data)`
-
 <a name="update"></a>
 
-Typical crUd. Use with `Resource` suffix to return as a resource.
+Typical crUd.
+
+Use with `Resource` suffix to return as a resource.
 
 ### `destroy(Model $model)`
 
