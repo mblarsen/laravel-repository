@@ -6,7 +6,9 @@ All notable changes to `laravel-repository` will be documented in this file
 
 -   feat: similar to `Resource` methods you can use `Query` to get the query
     builder instead of the result.
--   feat: list() called without column param will attempt to use default sort by.
+-   feat: list() called without column parameter will attempt to use default sort by.
+-   refactor: eliminate WITH_ALL and WITH_NONE constants. Just use `[]` and `[*]`
+    instead. This the Laravel way.
 
 ## 0.6.0
 

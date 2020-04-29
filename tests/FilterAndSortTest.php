@@ -221,7 +221,7 @@ class FilterAndSortTest extends TestCase
             ],
         ]));
 
-        $repository->setAllowedWith(Repository::WITH_ALLOW_ALL);
+        $repository->setAllowedWith(['*']);
 
         /** @var User $user */
         $user = $repository->find(1);

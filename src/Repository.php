@@ -33,9 +33,6 @@ class Repository
     use Sorts;
     use WrapsInResource;
 
-    const WITH_ALLOW_ALL = ['*'];
-    const WITH_ALLOW_NONE = [];
-
     /** @var string */
     protected $model;
 
