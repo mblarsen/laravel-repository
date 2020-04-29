@@ -1,9 +1,10 @@
 # laravel-repository
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/mblarsen/laravel-repository.svg?style=flat-square)](https://packagist.org/packages/mblarsen/laravel-repository)
-[![Build Status](https://img.shields.io/travis/mblarsen/laravel-repository/master.svg?style=flat-square)](https://travis-ci.org/mblarsen/laravel-repository)
-[![Quality Score](https://img.shields.io/scrutinizer/g/mblarsen/laravel-repository.svg?style=flat-square)](https://scrutinizer-ci.com/g/mblarsen/laravel-repository)
-[![Total Downloads](https://img.shields.io/packagist/dt/mblarsen/laravel-repository.svg?style=flat-square)](https://packagist.org/packages/mblarsen/laravel-repository)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/mblarsen/laravel-repository.svg)](https://packagist.org/packages/mblarsen/laravel-repository)
+[![Build Status](https://scrutinizer-ci.com/g/mblarsen/laravel-repository/badges/build.png?b=master)](https://scrutinizer-ci.com/g/mblarsen/laravel-repository/build-status/master)
+[![Code Coverage](https://scrutinizer-ci.com/g/mblarsen/laravel-repository/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/mblarsen/laravel-repository/?branch=master)
+[![Quality Score](https://img.shields.io/scrutinizer/g/mblarsen/laravel-repository.svg)](https://scrutinizer-ci.com/g/mblarsen/laravel-repository)
+[![Total Downloads](https://img.shields.io/packagist/dt/mblarsen/laravel-repository.svg)](https://packagist.org/packages/mblarsen/laravel-repository)
 
 > Beefed up query-builder and repository to reduce boilerplate and keep your controllers lean
 
