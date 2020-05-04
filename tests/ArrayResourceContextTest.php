@@ -4,6 +4,7 @@ namespace Mblarsen\LaravelRepository\Tests;
 
 use InvalidArgumentException;
 use Mblarsen\LaravelRepository\ArrayResourceContext;
+use Mblarsen\LaravelRepository\Repository;
 use Mblarsen\LaravelRepository\RequestResourceContext;
 use Mblarsen\LaravelRepository\Tests\Models\User;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -28,6 +29,18 @@ class ArrayResourceContextTest extends TestCase
         $this->assertEquals(['comments'], $context->with());
         $this->assertEquals($user, $context->user());
         $this->assertEquals(false, $context->paginate());
+    }
+
+    /** @test */
+    public function set_context_creates_from_array()
+    {
+        $repository = Repository::for(User::class);
+        $repository->setContext([
+            'sort_by' => 'name',
+            'sort_order' => 'desc',
+        ]);
+        $context = $repository->getContext();
+        $this->assertInstanceOf(ArrayResourceContext::class, $context);
     }
 
     /** @test */

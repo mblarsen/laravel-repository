@@ -126,10 +126,16 @@ class Repository
 
     /**
      * Set or replace the resource context
+     *
+     * @param ResourceContext|array $resource_context
+     * @param bool $set_allowed_with when true 'with' of the context is set to
+     *                               allowed with
      */
-    public function setContext(ResourceContext $resource_context, bool $set_allowed_with = false)
+    public function setContext($resource_context, bool $set_allowed_with = false)
     {
-        $this->resource_context = $resource_context;
+        $this->resource_context = is_array($resource_context)
+            ? ArrayResourceContext::create($resource_context)
+            : $resource_context;
 
         if ($set_allowed_with) {
             $this->setAllowedWith($resource_context->with());

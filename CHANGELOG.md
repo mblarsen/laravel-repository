@@ -4,6 +4,7 @@ All notable changes to `laravel-repository` will be documented in this file.
 
 ## next
 
+-   feat: 1st argument to `setContext()` can be an array to get ArrayResourceContext
 -   feat: add 2nd argument to `setContext()` so automatically setAllowedWith
     equal to whatever is set in the context.
 -   refactor: `ArrayResourceContext::merge()` is now recursive
