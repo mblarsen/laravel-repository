@@ -4,6 +4,9 @@ All notable changes to `laravel-repository` will be documented in this file.
 
 ## next
 
+-   feat: support relations in piped filters E.g user search
+    `address.email|address.phone`.
+
 ## 0.8.1
 
 -   bugfix: `set()` would create too many levels of array

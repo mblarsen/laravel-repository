@@ -42,11 +42,7 @@ trait Filters
 
         if ($initial && $multi_column) {
             $columns = explode('|', $original);
-            $query->where(function ($query) use ($columns, $value) {
-                foreach ($columns as $key) {
-                    $this->whereLike($query, $key, $value, 'orWhere');
-                }
-            });
+            $this->orWhereMany($query, $columns, $value);
         } elseif (count($path) === 1) {
             $key = $path[0];
             $this->whereLike($query, $key, $value);
@@ -68,6 +64,21 @@ trait Filters
                 $this->applyFiltersRecursively($query, $path, $value);
             });
         }
+    }
+
+    private function orWhereMany($query, $columns, $value)
+    {
+        $query->where(function ($query) use ($columns, $value) {
+            foreach ($columns as $key) {
+                $query->orWhere(function ($query) use ($key, $value) {
+                    $this->applyFiltersRecursively(
+                        $query,
+                        $key,
+                        $value,
+                    );
+                });
+            }
+        });
     }
 
     private function whereLike($query, $key, $value, $method = 'where')

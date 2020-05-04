@@ -417,11 +417,6 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function filter_multiple_same_value()
     {
-        // if (DB::getDriverName() === 'sqlite') {
-        //     $this->markTestSkipped();
-        //     return;
-        // }
-
         $repository = Repository::for(Post::class)
             ->setContext(ArrayResourceContext::create(
                 [
@@ -506,6 +501,29 @@ class FilterAndSortTest extends TestCase
         $users = $repository->all();
         $this->assertEquals(1, $users->count());
         $this->assertEquals('bar', $users->first()->first_name);
+    }
+
+    /** @test */
+    public function filter_by_relation_multiple()
+    {
+        $repository = Repository::for(User::class)
+            ->setContext(ArrayResourceContext::create(
+                [
+                    'filters' => [
+                        'country.name|posts.title' => 'aliens',
+                    ]
+                ]
+            ));
+
+        $query_all = $repository->allQuery();
+
+        $this->assertStringContainsString(
+            'countries',
+            $query_all->toBase()->toSql(),
+        );
+
+        $this->assertEquals(1, $query_all->get()->count());
+        $this->assertEquals('foo', $query_all->first()->first_name);
     }
 
     protected function logDB($callback)
