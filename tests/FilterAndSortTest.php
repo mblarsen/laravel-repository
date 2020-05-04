@@ -247,6 +247,19 @@ class FilterAndSortTest extends TestCase
     }
 
     /** @test */
+    public function set_allowed_with_is_set()
+    {
+        $repository = Repository::for(User::class);
+        $repository->setContext(ArrayResourceContext::create([
+            'with' => [
+                'comments',
+            ],
+        ]), true);
+        $user = $repository->find(1);
+        $this->assertTrue($user->relationLoaded('comments'), 'comments should be loaded');
+    }
+
+    /** @test */
     public function sort_asc()
     {
         $repository = Repository::for(User::class, ArrayResourceContext::create([

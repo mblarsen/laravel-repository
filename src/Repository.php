@@ -127,9 +127,13 @@ class Repository
     /**
      * Set or replace the resource context
      */
-    public function setContext(ResourceContext $resource_context)
+    public function setContext(ResourceContext $resource_context, bool $set_allowed_with = false)
     {
         $this->resource_context = $resource_context;
+
+        if ($set_allowed_with) {
+            $this->setAllowedWith($resource_context->with());
+        }
 
         return $this;
     }
