@@ -4,6 +4,8 @@ All notable changes to `laravel-repository` will be documented in this file
 
 ## next
 
+-   refactor: only use known values when creating an array context
+
 ## 0.7.0
 
 -   feat: similar to `Resource` methods you can use `Query` to get the query

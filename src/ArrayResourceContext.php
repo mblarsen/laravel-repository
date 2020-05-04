@@ -7,6 +7,17 @@ use Illuminate\Support\Arr;
 
 final class ArrayResourceContext implements ResourceContext
 {
+    /** @var array $context_keys */
+    protected static $context_keys = [
+        'filters',
+        'page',
+        'per_page',
+        'sort_by',
+        'sort_order',
+        'user',
+        'with',
+    ];
+
     /** @var array */
     protected $context;
 
@@ -17,8 +28,22 @@ final class ArrayResourceContext implements ResourceContext
 
     public function __construct(array $context = [])
     {
+        $context = $this->validateContext($context);
+
         /** @var array */
         $this->context = $context;
+    }
+
+    public function validateContext(array $context)
+    {
+        $valid_keys = self::$context_keys;
+        return Arr::only(
+            $context,
+            array_intersect(
+                $valid_keys,
+                array_keys($context)
+            )
+        );
     }
 
     public function filters(): array
@@ -59,13 +84,10 @@ final class ArrayResourceContext implements ResourceContext
         return $this->get('user');
     }
 
-    protected function get($key, $default = null)
-    {
-        return $this->context[$key] ?? $default;
-    }
-
     public function merge(array $values)
     {
+        $values = $this->validateContext($values);
+
         $this->context = array_merge($this->context, $values);
 
         return $this;
@@ -76,5 +98,10 @@ final class ArrayResourceContext implements ResourceContext
         $this->context = Arr::except($this->context, $keys);
 
         return $this;
+    }
+
+    protected function get($key, $default = null)
+    {
+        return $this->context[$key] ?? $default;
     }
 }
