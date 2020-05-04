@@ -136,12 +136,27 @@ class ArrayResourceContextTest extends TestCase
     public function can_set_value_with_path()
     {
         $context = ArrayResourceContext::create([
+            'sort_by' => 'name',
             'filters' => ['name' => 'cra'],
         ]);
 
-        $filters = $context->set('filters.name', 'foo')->filters();
+        $context->set('filters.name', 'foo')
+            ->set('sort_by', 'bar');
 
-        $this->assertEquals('foo', $filters['name']);
+        $this->assertEquals(['name' => 'foo'], $context->filters());
+        $this->assertEquals(['bar', 'asc'], $context->sortBy());
+    }
+
+    /** @test */
+    public function can_set_value_with_nested_path()
+    {
+        $context = ArrayResourceContext::create([
+            'filters' => ['owner.first_name' => 'cra'],
+        ]);
+
+        $filters = $context->set('filters.owner.first_name', 'foo')->filters();
+
+        $this->assertEquals(['owner.first_name' => 'foo'], $filters);
     }
 
     /** @test */

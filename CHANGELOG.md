@@ -4,6 +4,10 @@ All notable changes to `laravel-repository` will be documented in this file.
 
 ## next
 
+## 0.8.1
+
+-   bugfix: `set()` would create too many levels of array
+
 ## 0.8.0
 
 -   feat: 1st argument to `setContext()` can be an array to get ArrayResourceContext

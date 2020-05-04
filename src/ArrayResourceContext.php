@@ -49,13 +49,10 @@ final class ArrayResourceContext implements ResourceContext
 
     public function validateKey(string $key): string
     {
-        $dos_position = strpos($key, '.');
-        $head_key = $dos_position === false
-            ? $key
-            : substr($key, 0, $dos_position);
+        [$head] = $this->splitKey($key);
 
-        if (!in_array($head_key, self::$context_keys)) {
-            throw new InvalidArgumentException("Invalid key '$head_key'");
+        if (!in_array($head, self::$context_keys)) {
+            throw new InvalidArgumentException("Invalid key '$head'");
         }
 
         return $key;
@@ -115,11 +112,18 @@ final class ArrayResourceContext implements ResourceContext
         return data_get($this->context, $key, $default);
     }
 
-    public function set(string $key, $value, $overwrite = true)
+    public function set(string $key, $value)
     {
         $this->validateKey($key);
 
-        data_set($this->context, $key, $value, $overwrite);
+        [$head, $tail] = $this->splitKey($key);
+
+        if ($tail) {
+            $this->context[$head][$tail] = $value;
+        } else {
+            $this->context[$head] = $value;
+        }
+
 
         return $this;
     }
@@ -134,5 +138,17 @@ final class ArrayResourceContext implements ResourceContext
     public function toArray(): array
     {
         return array_merge($this->context, ['paginate' => $this->paginate()]);
+    }
+
+    private function splitKey($key)
+    {
+        $dos_position = strpos($key, '.');
+        $head = $dos_position !== false
+            ? substr($key, 0, $dos_position)
+            : $key;
+        $tail = $dos_position !== false
+            ? substr($key, $dos_position + 1)
+            : null;
+        return [$head, $tail];
     }
 }
