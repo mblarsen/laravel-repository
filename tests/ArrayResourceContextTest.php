@@ -152,4 +152,14 @@ class ArrayResourceContextTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $context->set('foo.name', 'foo');
     }
+
+    /** @test */
+    public function can_get_value_with_nested_path()
+    {
+        $context = ArrayResourceContext::create([
+            'filters' => ['name' => 'cra'],
+        ]);
+
+        $this->assertEquals('cra', $context->get('filters.name'));
+    }
 }
