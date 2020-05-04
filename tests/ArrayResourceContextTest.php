@@ -2,6 +2,7 @@
 
 namespace Mblarsen\LaravelRepository\Tests;
 
+use InvalidArgumentException;
 use Mblarsen\LaravelRepository\ArrayResourceContext;
 use Mblarsen\LaravelRepository\RequestResourceContext;
 use Mblarsen\LaravelRepository\Tests\Models\User;
@@ -114,5 +115,26 @@ class ArrayResourceContextTest extends TestCase
         ];
 
         $this->assertEquals($expected_array, $context->toArray());
+    }
+
+    /** @test */
+    public function can_set_value_with_path()
+    {
+        $context = ArrayResourceContext::create([
+            'filters' => ['name' => 'cra'],
+        ]);
+
+        $filters = $context->set('filters.name', 'foo')->filters();
+
+        $this->assertEquals('foo', $filters['name']);
+    }
+
+    /** @test */
+    public function can_set_only_valid()
+    {
+        $context = ArrayResourceContext::create([]);
+
+        $this->expectException(InvalidArgumentException::class);
+        $context->set('foo.name', 'foo');
     }
 }

@@ -4,6 +4,7 @@ namespace Mblarsen\LaravelRepository;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use InvalidArgumentException;
 
 final class ArrayResourceContext implements ResourceContext
 {
@@ -34,7 +35,7 @@ final class ArrayResourceContext implements ResourceContext
         $this->context = $context;
     }
 
-    public function validateContext(array $context)
+    public function validateContext(array $context): array
     {
         $valid_keys = self::$context_keys;
         return Arr::only(
@@ -44,6 +45,20 @@ final class ArrayResourceContext implements ResourceContext
                 array_keys($context)
             )
         );
+    }
+
+    public function validateKey(string $key): string
+    {
+        $dos_position = strpos($key, '.');
+        $head_key = $dos_position === false
+            ? $key
+            : substr($key, 0, $dos_position);
+
+        if (!in_array($head_key, self::$context_keys)) {
+            throw new InvalidArgumentException("Invalid key '$head_key'");
+        }
+
+        return $key;
     }
 
     public function filters(): array
@@ -93,6 +108,22 @@ final class ArrayResourceContext implements ResourceContext
         return $this;
     }
 
+    public function get($key, $default = null)
+    {
+        $this->validateKey($key);
+
+        return data_get($this->context, $key, $default);
+    }
+
+    public function set(string $key, $value, $overwrite = true)
+    {
+        $this->validateKey($key);
+
+        data_set($this->context, $key, $value, $overwrite);
+
+        return $this;
+    }
+
     public function exclude(array $keys)
     {
         $this->context = Arr::except($this->context, $keys);
@@ -103,10 +134,5 @@ final class ArrayResourceContext implements ResourceContext
     public function toArray(): array
     {
         return array_merge($this->context, ['paginate' => $this->paginate()]);
-    }
-
-    protected function get($key, $default = null)
-    {
-        return $this->context[$key] ?? $default;
     }
 }
