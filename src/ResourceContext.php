@@ -11,6 +11,7 @@ interface ResourceContext
     public function paginate(): bool;
     public function perPage(): int;
     public function sortBy(): array;
+    public function toArray(): array;
     public function user(): ?Model;
     public function with(): array;
 }

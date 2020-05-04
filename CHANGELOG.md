@@ -4,6 +4,7 @@ All notable changes to `laravel-repository` will be documented in this file
 
 ## next
 
+-   feat: add toArray to ArrayResourceContext + ResourceContext as well
 -   refactor: only use known values when creating an array context
 
 ## 0.7.0

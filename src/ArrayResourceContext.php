@@ -100,6 +100,11 @@ final class ArrayResourceContext implements ResourceContext
         return $this;
     }
 
+    public function toArray(): array
+    {
+        return array_merge($this->context, ['paginate' => $this->paginate()]);
+    }
+
     protected function get($key, $default = null)
     {
         return $this->context[$key] ?? $default;

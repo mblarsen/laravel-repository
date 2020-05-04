@@ -86,4 +86,33 @@ class ArrayResourceContextTest extends TestCase
         $this->assertEquals(['comments'], $context->with());
         $this->assertEquals(false, $context->paginate());
     }
+
+    /** @test */
+    public function converts_to_array()
+    {
+        $context = ArrayResourceContext::create([
+            'foo' => 'bar',
+            'uselss' => 'stuff',
+            'filters' => ['name' => 'cra'],
+            'page' => 1,
+            'per_page' => 15,
+            'sort_by' => 'name',
+            'sort_order' => 'desc',
+            'user' => null,
+            'with' => ['comments'],
+        ]);
+
+        $expected_array = [
+            'filters' => ['name' => 'cra'],
+            'page' => 1,
+            'paginate' => true,
+            'per_page' => 15,
+            'sort_by' => 'name',
+            'sort_order' => 'desc',
+            'user' => null,
+            'with' => ['comments'],
+        ];
+
+        $this->assertEquals($expected_array, $context->toArray());
+    }
 }
