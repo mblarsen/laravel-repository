@@ -4,6 +4,7 @@ All notable changes to `laravel-repository` will be documented in this file.
 
 ## next
 
+-   refactor: `ArrayResourceContext::merge()` is now recursive
 -   feat: add `get()` and `set()` to ArrayResourceContext that respects valid keys
 -   feat: add toArray to ArrayResourceContext + ResourceContext as well
 -   refactor: only use known values when creating an array context

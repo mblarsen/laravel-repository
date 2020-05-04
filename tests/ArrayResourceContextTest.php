@@ -35,9 +35,11 @@ class ArrayResourceContextTest extends TestCase
     {
         $context = ArrayResourceContext::create([
             'sort_by' => 'name',
-        ])->merge(['sort_order' => 'desc']);
+            'filters' => ['name' => 'cra'],
+        ])->merge(['sort_order' => 'desc', 'filters' => ['foo' => 'bar']]);
 
         $this->assertEquals(['name', 'desc'], $context->sortBy());
+        $this->assertEquals(['name' => 'cra', 'foo' => 'bar'], $context->filters());
     }
 
     /** @test */

@@ -103,7 +103,7 @@ final class ArrayResourceContext implements ResourceContext
     {
         $values = $this->validateContext($values);
 
-        $this->context = array_merge($this->context, $values);
+        $this->context = array_merge_recursive($this->context, $values);
 
         return $this;
     }
