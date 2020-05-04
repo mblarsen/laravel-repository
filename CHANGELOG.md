@@ -4,6 +4,8 @@ All notable changes to `laravel-repository` will be documented in this file.
 
 ## next
 
+## 0.9.0
+
 -   feat: support relations in piped filters E.g user search
     `address.email|address.phone`.
 
