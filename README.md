@@ -193,13 +193,10 @@ public function index(UserRepository $repository)
             ->merge([
                 'filters' => ['status' => 'approved']
             ])
-            ->exclude(['page'])
+            ->exclude(['search_by'])
     );
 }
 ```
-
-Note that `toArray()` returns a full context. Including the defaults for `page`
-and `per_page`. Use `exclude()` remove them from the `ArrayResourceContext`.
 
 ### Custom repositories
 

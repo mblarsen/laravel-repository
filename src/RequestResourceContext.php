@@ -64,9 +64,9 @@ class RequestResourceContext implements ResourceContext
         [$sort_by, $sort_order] = $this->sortBy();
         return [
             'filters' => $this->filters(),
-            'page' => $this->page(),
+            'page' => $this->request->get('page'),
             'paginate' => $this->paginate(),
-            'per_page' => $this->perPage(),
+            'per_page' => $this->request->get('per_page'),
             'sort_by' => $sort_by,
             'sort_order' => $sort_order,
             'user' => $this->user(),

@@ -137,7 +137,13 @@ final class ArrayResourceContext implements ResourceContext
 
     public function toArray(): array
     {
-        return array_merge($this->context, ['paginate' => $this->paginate()]);
+        return array_merge(
+            $this->context,
+            [
+                'paginate' => $this->paginate(),
+                'user' => $this->user()
+            ]
+        );
     }
 
     private function splitKey($key)

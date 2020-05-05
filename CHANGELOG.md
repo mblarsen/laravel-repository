@@ -4,6 +4,14 @@ All notable changes to `laravel-repository` will be documented in this file.
 
 ## next
 
+-   refactor: the `toArray()` function will return the original value of `page`
+    and `per_page`. While the output no longer truely reflects what is used in
+    the Repository class it makes it much more useful working with. E.g if want
+    to modify a ResourceContext you can convert it to an ArrayContext. Often you
+    don't care about the pagination details, but prior to this version you would
+    have to always exclude `page` otherwise a non-page request would become
+    paged.
+
 ## 0.9.0
 
 -   feat: support relations in piped filters E.g user search

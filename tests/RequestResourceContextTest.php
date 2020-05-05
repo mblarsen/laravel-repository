@@ -49,9 +49,9 @@ class RequestResourceContextTest extends TestCase
         $context_array = $context->toArray();
         $expected_array = [
             'filters' => ['name' => 'cra'],
-            'page' => 1,
+            'page' => null,
             'paginate' => false,
-            'per_page' => 15,
+            'per_page' => null,
             'sort_by' => 'name',
             'sort_order' => 'desc',
             'user' => null,
