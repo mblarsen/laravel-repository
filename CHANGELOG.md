@@ -6,12 +6,13 @@ All notable changes to `laravel-repository` will be documented in this file.
 
 ## 0.12.0
 
--   feat: you can change the default key names used in `RequestResourceContext`
+-   feat: you can change the default key names used in
+    `RequestResourceContext` using `mapKeys()`. See example in [README customizing section](README.md#customizing-requestresourcecontext).
 
 ## 0.11.0
 
 -   feat: allow exact match instead of LIKE using `!` after property name. See
-    updated (README — filters)[README.md#filtering].
+    updated [README filtering section](README.md#filtering).
 -   bugfix: the set_allowed_with failed for when a plain array was passed as
     context.
 
@@ -63,7 +64,7 @@ All notable changes to `laravel-repository` will be documented in this file.
 
 ## 0.4.0
 
--   feat: support for JsonResource (see [README resources section](README.md#resources)
+-   feat: support for JsonResource (see [README resources section](README.md#resources))
 
 ## 0.3.0
 
