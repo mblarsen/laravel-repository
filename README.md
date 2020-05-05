@@ -106,10 +106,12 @@ That is:
 -   `page=2`, paginated result, request page 2 (default: `null` meaing not paginated)
 -   `filters[title]=laravel` search for title in the posts name
 
+You can also filter by relationships. E.g. `filters[address.zip]=1227`.
+
 Since relations are disallowed by default nothing requests to include are
 ignored. But once we set that up your will be able to request relations as well:
 
--   `with[]=ads&with[]comments`, will include the relations `ads` and `comments`.
+-   `with[]=ads&with[]=comments`, will include the relations `ads` and `comments`.
 
 ### Repository features
 
