@@ -45,7 +45,7 @@ trait Filters
             $this->orWhereMany($query, $columns, $value);
         } elseif (count($path) === 1) {
             $key = $path[0];
-            $this->whereLike($query, $key, $value);
+            $this->where($query, $key, $value);
         } elseif (count($path) === 2) {
             $relation_name = Str::camel($path[0]);
             $key = $path[1];
@@ -53,7 +53,7 @@ trait Filters
                 $key,
                 $value
             ) {
-                $this->whereLike($query, $key, $value);
+                $this->where($query, $key, $value);
             });
         } elseif (count($path) > 2) {
             $relation_name = Str::camel(array_shift($path));
@@ -81,16 +81,28 @@ trait Filters
         });
     }
 
-    private function whereLike($query, $key, $value, $method = 'where')
+    private function where($query, $key, $value, $method = 'where')
     {
+        $comparator = Str::endsWith($key, '!') ? '=' : 'LIKE';
+
+        $key = rtrim($key, '!');
+
+        if ($comparator === 'LIKE') {
+            $value = "'%$value%'";
+        } elseif (is_int($value) || ctype_digit($value)) {
+            $value = (int) $value;
+        } else {
+            $value = "'$value'";
+        }
+
         $has_concat = strpos($key, '+') !== false;
         if ($has_concat) {
             $column_list = str_replace('+', ',', $key);
-            $raw = "CONCAT_WS(' ', {$column_list}) LIKE '%{$value}%'";
+            $raw = "CONCAT_WS(' ', {$column_list}) $comparator $value";
             $raw_method = $method . 'Raw';
             $query->$raw_method($raw);
         } else {
-            $query->$method($key, 'LIKE', "%${value}%");
+            $query->$method($key, $comparator, trim($value, "'"));
         }
     }
 }

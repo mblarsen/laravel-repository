@@ -151,12 +151,17 @@ Query: `filter[key]=value`
 This package provides a search like functionality through its filters. Under
 the hood it uses `LIKE`, ie. `%value%`.
 
+If you want exact matches, ie. `=`, instead you can add an exclamation point to
+then end of the key name.
+
 The key doesn't have to be properties on the main model. It can be relation
 properties as well. Here are some examples:
 
 ```php
 // Search on model property
 title=cra
+// Search on model property exact match
+code_name!=wowcrab
 // Seacch on relation property
 address.city=mass
 ```

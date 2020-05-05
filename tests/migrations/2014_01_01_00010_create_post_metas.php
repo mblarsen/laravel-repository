@@ -15,6 +15,7 @@ class CreatePostMetas extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('post_id');
             $table->string('version')->default('1');
+            $table->string('code')->nullable();
             $table->timestamps();
         });
     }

@@ -4,6 +4,9 @@ All notable changes to `laravel-repository` will be documented in this file.
 
 ## next
 
+-   feat: allow exact match instead of LIKE using `!` after property name. See
+    updated (README — filters)[README.md#filtering].
+
 ## 0.10.0
 
 -   refactor: the `toArray()` function will return the original value of `page`

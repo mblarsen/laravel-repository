@@ -8,7 +8,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
-use Mblarsen\LaravelRepository\ArrayResourceContext;
 use Mblarsen\LaravelRepository\Repository;
 use Mblarsen\LaravelRepository\Tests\Models\Country;
 use Mblarsen\LaravelRepository\Tests\Models\Post;
@@ -28,16 +27,23 @@ class FilterAndSortTest extends TestCase
             'title' => 'aliens', 'body' => 'Nothing interesting', 'user_id' => $user_1->id
         ]);
         $post_1->postMeta()->create(['version' => 3]);
+
         $post_2 = Post::create([
             'title' => 'fish', 'body' => 'Very repetitive',  'user_id' => $user_2->id
         ]);
         $post_2->postMeta()->create(['version' => 2]);
         $post_2->comments()->create(['body' => 'wow', 'user_id' => $user_1->id, 'created_at' => now()]);
+
         $post_3 = Post::create([
             'title' => 'boats', 'body' => 'No one will read this', 'user_id' => $user_3->id
         ]);
         $post_3->postMeta()->create(['version' => 1]);
         $post_3->comments()->create(['body' => 'crux', 'user_id' => $user_2->id, 'created_at' => now()->addMinutes(5)]);
+
+        $post_4 = Post::create([
+            'title' => 'bat', 'body' => 'bat-crazy', 'user_id' => $user_3->id
+        ]);
+        $post_4->postMeta()->create(['version' => 9, 'code' => 'numbat']);
     }
 
     /** @test */
@@ -58,10 +64,10 @@ class FilterAndSortTest extends TestCase
     public function fetches_all_paginated()
     {
         /** @var LengthAwarePaginator */
-        $users = Repository::for(User::class, ArrayResourceContext::create([
+        $users = Repository::for(User::class, [
             'page' => 1,
             'per_page' => 2,
-        ]))->all();
+        ])->all();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $users);
 
@@ -73,10 +79,10 @@ class FilterAndSortTest extends TestCase
         $this->assertEquals(['foo', 'bar'], Arr::pluck($users->items(), ['first_name']));
 
         /** @var LengthAwarePaginator */
-        $users = Repository::for(User::class, ArrayResourceContext::create([
+        $users = Repository::for(User::class, [
             'page' => 2,
             'per_page' => 2,
-        ]))->all();
+        ])->all();
 
         $this->assertEquals(1, count($users->items()));
         $this->assertEquals(3, $users->total());
@@ -96,7 +102,8 @@ class FilterAndSortTest extends TestCase
             [
                 ['value' => 1, 'label' => 'aliens'],
                 ['value' => 2, 'label' => 'fish'],
-                ['value' => 3, 'label' => 'boats']
+                ['value' => 3, 'label' => 'boats'],
+                ['value' => 4, 'label' => 'bat']
             ],
             $posts->toArray()
         );
@@ -113,6 +120,7 @@ class FilterAndSortTest extends TestCase
         $this->assertEquals(
             [
                 ['value' => 1, 'label' => 'aliens'],
+                ['value' => 4, 'label' => 'bat'],
                 ['value' => 3, 'label' => 'boats'],
                 ['value' => 2, 'label' => 'fish'],
             ],
@@ -126,7 +134,7 @@ class FilterAndSortTest extends TestCase
         /** @var LengthAwarePaginator */
         $posts = Repository::for(
             Post::class,
-            ArrayResourceContext::create(['page' => 1, 'per_page' => 2])
+            ['page' => 1, 'per_page' => 2]
         )
             ->list('title');
 
@@ -170,7 +178,7 @@ class FilterAndSortTest extends TestCase
         /** @var LengthAwarePaginator */
         $users = Repository::for(
             User::class,
-            ArrayResourceContext::create(['page' => 1, 'per_page' => 2])
+            ['page' => 1, 'per_page' => 2]
         )
             ->list(function ($user) {
                 return $user->full_name;
@@ -196,12 +204,12 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function includes_relations()
     {
-        $repository = Repository::for(User::class, ArrayResourceContext::create([
+        $repository = Repository::for(User::class, [
             'with' => [
                 'comments',
                 'posts',
             ],
-        ]));
+        ]);
 
         $repository->setAllowedWith(['posts']);
 
@@ -214,12 +222,12 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function includes_allow_all()
     {
-        $repository = Repository::for(User::class, ArrayResourceContext::create([
+        $repository = Repository::for(User::class, [
             'with' => [
                 'comments',
                 'posts',
             ],
-        ]));
+        ]);
 
         $repository->setAllowedWith(['*']);
 
@@ -232,11 +240,11 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function includes_default_with()
     {
-        $repository = Repository::for(User::class, ArrayResourceContext::create([
+        $repository = Repository::for(User::class, [
             'with' => [
                 'comments',
             ],
-        ]))
+        ])
             ->setAllowedWith(['comments'])
             ->setDefaultWith(['posts']);
 
@@ -250,11 +258,11 @@ class FilterAndSortTest extends TestCase
     public function set_allowed_with_is_set()
     {
         $repository = Repository::for(User::class);
-        $repository->setContext(ArrayResourceContext::create([
+        $repository->setContext([
             'with' => [
                 'comments',
             ],
-        ]), true);
+        ], true);
         $user = $repository->find(1);
         $this->assertTrue($user->relationLoaded('comments'), 'comments should be loaded');
     }
@@ -262,9 +270,9 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function sort_asc()
     {
-        $repository = Repository::for(User::class, ArrayResourceContext::create([
+        $repository = Repository::for(User::class, [
             'sort_by' => 'first_name',
-        ]));
+        ]);
 
         /** @var Collection */
         $users = $repository->all();;
@@ -275,10 +283,10 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function sort_desc()
     {
-        $repository = Repository::for(User::class, ArrayResourceContext::create([
+        $repository = Repository::for(User::class, [
             'sort_by' => 'first_name',
             'sort_order' => 'desc',
-        ]));
+        ]);
 
         /** @var Collection */
         $users = $repository->all();
@@ -302,58 +310,51 @@ class FilterAndSortTest extends TestCase
     public function sort_by_has_one_relation()
     {
         $repository = Repository::for(Post::class)
-            ->setContext(ArrayResourceContext::create(
-                [
-                    'sort_by' => 'postMeta.version',
-                ]
-            ));
+            ->setContext([
+                'sort_by' => 'postMeta.version',
+            ]);
 
         /** @var Collection */
         $posts = $repository->all();
 
-        $this->assertEquals(['boats', 'fish', 'aliens'], $posts->pluck(['title'])->toArray());
+        $this->assertEquals(['boats', 'fish', 'aliens', 'bat'], $posts->pluck(['title'])->toArray());
     }
 
     /** @test */
     public function sort_by_belongs_to_relation()
     {
         $repository = Repository::for(Post::class)
-            ->setContext(ArrayResourceContext::create(
-                [
-                    'sort_by' => 'user.first_name',
-                ]
-            ));
+            ->setContext([
+                'sort_by' => 'user.first_name',
+            ]);
         /** @var Collection */
         $posts = $repository->all();
-        $this->assertEquals(['fish', 'aliens', 'boats'], $posts->pluck(['title'])->toArray());
+        $this->assertEquals(['fish', 'aliens', 'boats', 'bat'], $posts->pluck(['title'])->toArray());
     }
 
     /** @test */
     public function sort_by_morph_relation()
     {
         $repository = Repository::for(Post::class)
-            ->setContext(ArrayResourceContext::create(
-                [
-                    'sort_by' => 'comments.created_at',
-                    'sort_order' => 'asc'
-                ]
-            ));
+            ->setContext([
+                'sort_by' => 'comments.created_at',
+                'sort_order' => 'asc'
+            ]);
 
         /** @var Collection */
         $posts = $repository->all();
         // null first
         // null
+        // null
         // now
         // now+5
-        $this->assertEquals(['aliens', 'fish', 'boats'], $posts->pluck(['title'])->toArray());
+        $this->assertEquals(['aliens', 'bat', 'fish', 'boats'], $posts->pluck(['title'])->toArray());
 
         $repository = Repository::for(Post::class)
-            ->setContext(ArrayResourceContext::create(
-                [
-                    'sort_by' => 'comments.created_at',
-                    'sort_order' => 'desc'
-                ]
-            ));
+            ->setContext([
+                'sort_by' => 'comments.created_at',
+                'sort_order' => 'desc'
+            ]);
 
         /** @var Collection */
         $posts = $repository->all();
@@ -361,18 +362,17 @@ class FilterAndSortTest extends TestCase
         // now+5
         // now
         // null
-        $this->assertEquals(['boats', 'fish', 'aliens'], $posts->pluck(['title'])->toArray());
+        // null
+        $this->assertEquals(['boats', 'fish', 'aliens', 'bat'], $posts->pluck(['title'])->toArray());
     }
 
     /** @test */
     public function sort_by_unsupported_relation()
     {
         $repository = Repository::for(Country::class)
-            ->setContext(ArrayResourceContext::create(
-                [
-                    'sort_by' => 'posts.title',
-                ]
-            ));
+            ->setContext([
+                'sort_by' => 'posts.title',
+            ]);
 
         $this->expectExceptionMessage('Relation type HasManyThrough is not supported');
         $repository->all();
@@ -383,14 +383,36 @@ class FilterAndSortTest extends TestCase
     public function filter_one()
     {
         $repository = Repository::for(Post::class)
-            ->setContext(ArrayResourceContext::create(
-                [
-                    'filters' => [
-                        'title' => 'oat' // boat
-                    ]
+            ->setContext([
+                'filters' => [
+                    'title' => 'oat' // boat
                 ]
-            ));
+            ]);
         /** @var Collection */
+        $posts = $repository->all();
+        $this->assertEquals(1, $posts->count());
+        $this->assertEquals('boats', $posts->first()->title);
+    }
+
+    /** @test */
+    public function filter_one_exact()
+    {
+        $repository = Repository::for(Post::class)
+            ->setContext([
+                'filters' => [
+                    'title!' => 'oat' // boat
+                ]
+            ]);
+        /** @var Collection */
+        $posts = $repository->all();
+        $this->assertEquals(0, $posts->count());
+
+        $repository->setContext([
+            'filters' => [
+                'title!' => 'boats' // boats
+            ]
+        ]);
+
         $posts = $repository->all();
         $this->assertEquals(1, $posts->count());
         $this->assertEquals('boats', $posts->first()->title);
@@ -400,15 +422,37 @@ class FilterAndSortTest extends TestCase
     public function filter_multiple_different_values()
     {
         $repository = Repository::for(Post::class)
-            ->setContext(ArrayResourceContext::create(
-                [
-                    'filters' => [
-                        'title' => 'i', // alien and fish
-                        'body' => 'y' // only fish
-                    ]
+            ->setContext([
+                'filters' => [
+                    'title' => 'i', // alien and fish
+                    'body' => 'y' // only fish
                 ]
-            ));
+            ]);
         /** @var Collection */
+        $posts = $repository->all();
+        $this->assertEquals(1, $posts->count());
+        $this->assertEquals('fish', $posts->first()->title);
+    }
+
+    /** @test */
+    public function filter_multiple_different_values_exact()
+    {
+        $repository = Repository::for(Post::class)
+            ->setContext([
+                'filters' => [
+                    'title!' => 'i', // alien and fish
+                    'body' => 'y' // only fish
+                ]
+            ]);
+        $posts = $repository->all();
+        $this->assertEquals(0, $posts->count());
+
+        $repository->setContext([
+            'filters' => [
+                'title!' => 'fish', // alien and fish
+                'body' => 'y' // only fish
+            ]
+        ]);
         $posts = $repository->all();
         $this->assertEquals(1, $posts->count());
         $this->assertEquals('fish', $posts->first()->title);
@@ -418,16 +462,51 @@ class FilterAndSortTest extends TestCase
     public function filter_multiple_same_value()
     {
         $repository = Repository::for(Post::class)
-            ->setContext(ArrayResourceContext::create(
-                [
-                    'filters' => [
-                        'title|body' => 'i', // alien and fish has in title, boat has in body
-                    ]
+            ->setContext([
+                'filters' => [
+                    'title!|body' => 'i', // alien and fish has in title, boat has in body
                 ]
-            ));
+            ]);
         /** @var Collection */
         $posts = $repository->all();
         $this->assertEquals(3, $posts->count());
+    }
+
+    /** @test */
+    public function filter_multiple_same_value_exact()
+    {
+        $repository = Repository::for(Post::class)
+            ->setContext([
+                'filters' => [
+                    'title|body' => 'bat',
+                ]
+            ]);
+        $posts = $repository->all();
+        $this->assertEquals(1, $posts->count());
+
+        $repository->setContext([
+            'filters' => [
+                'title|body!' => 'bat',
+            ]
+        ]);
+        $posts = $repository->all();
+        $this->assertEquals(1, $posts->count());
+
+        $repository->setContext([
+            'filters' => [
+                'title!|body' => 'bat',
+            ]
+        ]);
+        $posts = $repository->all();
+        $this->assertEquals(1, $posts->count());
+
+        $repository->setContext([
+            'filters' => [
+                'title!|body!' => 'bat',
+            ]
+        ]);
+        $posts = $repository->all();
+        $this->assertEquals(1, $posts->count());
     }
 
     /** @test */
@@ -435,14 +514,12 @@ class FilterAndSortTest extends TestCase
     {
         try {
             $repository = Repository::for(Post::class)
-                ->setContext(ArrayResourceContext::create(
-                    [
-                        'sort_by' => 'title',
-                        'filters' => [
-                            'title+body' => 's no', // 'alients Nothing...', 'boats No one...'
-                        ]
+                ->setContext([
+                    'sort_by' => 'title',
+                    'filters' => [
+                        'title+body' => 's no', // 'alients Nothing...', 'boats No one...'
                     ]
-                ));
+                ]);
             /** @var Collection */
             $posts = $repository->all();
 
@@ -458,16 +535,48 @@ class FilterAndSortTest extends TestCase
     }
 
     /** @test */
+    public function filter_using_concat_exact()
+    {
+        try {
+            $repository = Repository::for(Post::class)
+                ->setContext([
+                    'sort_by' => 'title',
+                    'filters' => [
+                        'title+body!' => 's no',
+                    ]
+                ]);
+            /** @var Collection */
+            $posts = $repository->all();
+            $this->assertEquals(0, $posts->count());
+
+            $repository->setContext([
+                'sort_by' => 'title',
+                'filters' => [
+                    'title+body!' => 'aliens Nothing interesting',
+                ]
+            ]);
+            /** @var Collection */
+            $posts = $repository->all();
+            $this->assertEquals(1, $posts->count());
+            $this->assertEquals(['aliens'], $posts->pluck(['title'])->toArray());
+        } catch (QueryException $e) {
+            if (DB::getDriverName() === 'sqlite') {
+                $this->markTestSkipped();
+            } else {
+                throw $e;
+            }
+        }
+    }
+
+    /** @test */
     public function filter_by_relation()
     {
         $repository = Repository::for(Post::class)
-            ->setContext(ArrayResourceContext::create(
-                [
-                    'filters' => [
-                        'postMeta.version' => 3,
-                    ]
+            ->setContext([
+                'filters' => [
+                    'postMeta.version' => 3,
                 ]
-            ));
+            ]);
         /** @var Collection */
         $posts = $repository->all();
         $this->assertEquals(1, $posts->count());
@@ -475,28 +584,54 @@ class FilterAndSortTest extends TestCase
     }
 
     /** @test */
+    public function filter_by_relation_exact_number()
+    {
+        $repository = Repository::for(Post::class)
+            ->setContext([
+                'filters' => [
+                    'postMeta.version!' => 9,
+                ]
+            ]);
+        /** @var Collection */
+        $posts = $repository->all();
+        $this->assertEquals(1, $posts->count());
+        $this->assertEquals('bat', $posts->first()->title);
+    }
+
+    /** @test */
+    public function filter_by_relation_exact_string()
+    {
+        $repository = Repository::for(Post::class)
+            ->setContext([
+                'filters' => [
+                    'postMeta.code!' => "numbat",
+                ]
+            ]);
+        /** @var Collection */
+        $posts = $repository->all();
+        $this->assertEquals(1, $posts->count());
+        $this->assertEquals('bat', $posts->first()->title);
+    }
+
+    /** @test */
     public function filter_by_relation_deeper()
     {
         $repository = Repository::for(User::class)
-            ->setContext(ArrayResourceContext::create(
-                [
-                    'filters' => [
-                        'posts.postMeta.version' => 3,
-                    ]
+            ->setContext([
+                'filters' => [
+                    'posts.postMeta.version' => 3,
                 ]
-            ));
+            ]);
         /** @var Collection */
         $users = $repository->all();
         $this->assertEquals(1, $users->count());
         $this->assertEquals('foo', $users->first()->first_name);
 
-        $repository->setContext(ArrayResourceContext::create(
-            [
-                'filters' => [
-                    'posts.postMeta.version' => 2,
-                ]
+        $repository->setContext([
+            'filters' => [
+                'posts.postMeta.version' => 2,
             ]
-        ));
+        ]);
         /** @var Collection */
         $users = $repository->all();
         $this->assertEquals(1, $users->count());
@@ -504,16 +639,45 @@ class FilterAndSortTest extends TestCase
     }
 
     /** @test */
+    public function filter_by_relation_deeper_exact()
+    {
+        $repository = Repository::for(User::class)
+            ->setContext([
+                'filters' => [
+                    'posts.postMeta.version!' => 3,
+                ]
+            ]);
+        $users = $repository->all();
+        $this->assertEquals(1, $users->count());
+        $this->assertEquals('foo', $users->first()->first_name);
+
+        $repository->setContext([
+            'filters' => [
+                'posts.postMeta.code!' => "bat",
+            ]
+        ]);
+        $users = $repository->all();
+        $this->assertEquals(0, $users->count());
+
+        $repository->setContext([
+            'filters' => [
+                'posts.postMeta.code!' => "numbat",
+            ]
+        ]);
+        $users = $repository->all();
+        $this->assertEquals(1, $users->count());
+        $this->assertEquals('mars', $users->first()->first_name);
+    }
+
+    /** @test */
     public function filter_by_relation_multiple()
     {
         $repository = Repository::for(User::class)
-            ->setContext(ArrayResourceContext::create(
-                [
-                    'filters' => [
-                        'country.name|posts.title' => 'aliens',
-                    ]
+            ->setContext([
+                'filters' => [
+                    'country.name|posts.title' => 'aliens',
                 ]
-            ));
+            ]);
 
         $query_all = $repository->allQuery();
 
@@ -522,6 +686,33 @@ class FilterAndSortTest extends TestCase
             $query_all->toBase()->toSql(),
         );
 
+        $this->assertEquals(1, $query_all->get()->count());
+        $this->assertEquals('foo', $query_all->first()->first_name);
+    }
+
+    /** @test */
+    public function filter_by_relation_multiple_exact()
+    {
+        $repository = Repository::for(User::class)
+            ->setContext([
+                'filters' => [
+                    'country.name|posts.title!' => 'alien',
+                ]
+            ]);
+        $query_all = $repository->allQuery();
+
+        $this->assertStringContainsString(
+            'countries',
+            $query_all->toBase()->toSql(),
+        );
+        $this->assertEquals(0, $query_all->get()->count());
+
+        $repository->setContext([
+            'filters' => [
+                'country.name|posts.title!' => 'aliens',
+            ]
+        ]);
+        $query_all = $repository->allQuery();
         $this->assertEquals(1, $query_all->get()->count());
         $this->assertEquals('foo', $query_all->first()->first_name);
     }
