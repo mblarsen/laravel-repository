@@ -4,6 +4,8 @@ All notable changes to `laravel-repository` will be documented in this file.
 
 ## next
 
+## 0.10.0
+
 -   refactor: the `toArray()` function will return the original value of `page`
     and `per_page`. While the output no longer truely reflects what is used in
     the Repository class it makes it much more useful working with. E.g if want
