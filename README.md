@@ -181,7 +181,7 @@ A different way to filter is to provider a query builder to `all()` and
 You cannot modify the request context directly, but you have the option to
 convert it to an `ArrayResourceContext`.
 
-```
+```php
 public function index(UserRepository $repository)
 {
     $repository->setContext(
@@ -345,7 +345,7 @@ $repository = Repository::for(User::class, [
 -   [`create(array $data)`](#create)
 -   [`update(Model $model, array $data)`](#update)
 -   [`destroy(Model $model)`](#destroy)
--   [`setContext(ResourceContext $resource_context)`](setContext)
+-   [`setContext(ResourceContext|array $resource_context)`](setContext)
 -   [`setModel(string $model)`](setModel)
 -   [`setAllowedWith(array $allowed)`](#setAllowedWith)
 -   [`setDefaultSort(string $by, string $order = 'asc')`](#setDefaulSort)
@@ -438,7 +438,7 @@ Use with `Resource` suffix to return as a resource.
 
 Typical cruD.
 
-### `setContext(ResourceContext $resource_context)`
+### `setContext(ResourceContext|array $resource_context)`
 
 <a name="setContext"></a>
 
