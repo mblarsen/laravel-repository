@@ -6,6 +6,8 @@ All notable changes to `laravel-repository` will be documented in this file.
 
 -   feat: allow exact match instead of LIKE using `!` after property name. See
     updated (README — filters)[README.md#filtering].
+-   bugfix: the set_allowed_with failed for when a plain array was passed as
+    context.
 
 ## 0.10.0
 

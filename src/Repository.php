@@ -138,7 +138,7 @@ class Repository
             : $resource_context;
 
         if ($set_allowed_with) {
-            $this->setAllowedWith($resource_context->with());
+            $this->setAllowedWith($this->resource_context->with());
         }
 
         return $this;
