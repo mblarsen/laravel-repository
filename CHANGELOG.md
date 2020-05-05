@@ -4,6 +4,8 @@ All notable changes to `laravel-repository` will be documented in this file.
 
 ## next
 
+-   feat: you can change the default key names used in `RequestResourceContext`
+
 ## 0.11.0
 
 -   feat: allow exact match instead of LIKE using `!` after property name. See

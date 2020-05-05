@@ -319,6 +319,57 @@ protected $resource_collection = UserResourceCollection::class
 _Note: `list()` doesn't support resources. It didn't make any sense to me. You
 are welcome to change my mind._
 
+### Customizing `RequestResourceContext`
+
+The default values that the `RequestResourceContext` looks for in incoming request are:
+
+-   `filters`
+-   `page`
+-   `per_page`
+-   `sort_by`
+-   `sort_order`
+-   `with`
+
+If you don't like these or for some reason cannot use them. You have the option
+to provide your own keys using `mapKeys()` on the context. `mapKeys()` lets you
+map one or more keys to your preferred scheme.
+
+By far the easiest way to do this is add this bit of code in your `AppServiceProvider`.
+
+```php
+public function register()
+{
+    $this->app->resolving(RequestResourceContext::class, function ($context) {
+        $context->mapKeys([
+            'filters' => 'filter'
+            'sort_by' => 'order_by',
+            'sort_order' => 'direction',
+            'per_page' => 'take',
+        ]);
+
+        // or if you simply prefer camelCase
+
+        $context->mapKeys([
+            'sort_by' => 'sortBy',
+            'sort_order' => 'sortOrder',
+            'per_page' => 'perPage',
+        ]);
+    });
+}
+```
+
+So as where this would be the old way:
+
+```
+/posts?sort_by=title&per_page=10&with=comments
+```
+
+your client now should use this scheme:
+
+```
+/posts?sortBy=title&perPage=10&with=comments
+```
+
 ### Testing
 
 When it comes to testing the `ArrayResourceContext` comes in handy. It lets you

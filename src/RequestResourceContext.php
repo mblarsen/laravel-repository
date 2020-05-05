@@ -11,6 +11,16 @@ class RequestResourceContext implements ResourceContext
     /** @var Request */
     protected $request;
 
+    /** @var array */
+    protected $keys = [
+        'filters' => 'filters',
+        'page' => 'page',
+        'per_page' => 'per_page',
+        'sort_by' => 'sort_by',
+        'sort_order' => 'sort_order',
+        'with' => 'with',
+    ];
+
     public function __construct()
     {
         $this->request = request();
@@ -18,29 +28,29 @@ class RequestResourceContext implements ResourceContext
 
     public function filters(): array
     {
-        return $this->request->get('filters', []);
+        return $this->get('filters', []);
     }
 
     public function page(): int
     {
-        return $this->request->get('page', 1);
+        return $this->get('page', 1);
     }
 
     public function perPage(): int
     {
-        return $this->request->get('per_page', 15);
+        return $this->get('per_page', 15);
     }
 
     public function paginate(): bool
     {
-        return $this->request->has('page');
+        return $this->has('page');
     }
 
     public function sortBy(): array
     {
         return [
-            $this->request->get('sort_by', null),
-            $this->request->get('sort_order', null),
+            $this->get('sort_by', null),
+            $this->get('sort_order', null),
         ];
     }
 
@@ -51,9 +61,16 @@ class RequestResourceContext implements ResourceContext
 
     public function with(): array
     {
-        return $this->request->has('with')
-            ? Arr::wrap($this->request->get('with'))
+        return $this->has('with')
+            ? Arr::wrap($this->get('with'))
             : [];
+    }
+
+    public function mapKeys(array $keys)
+    {
+        $this->keys = array_merge($this->keys, $keys);
+
+        return $this;
     }
 
     /**
@@ -64,13 +81,23 @@ class RequestResourceContext implements ResourceContext
         [$sort_by, $sort_order] = $this->sortBy();
         return [
             'filters' => $this->filters(),
-            'page' => $this->request->get('page'),
+            'page' => $this->get('page'),
             'paginate' => $this->paginate(),
-            'per_page' => $this->request->get('per_page'),
+            'per_page' => $this->get('per_page'),
             'sort_by' => $sort_by,
             'sort_order' => $sort_order,
             'user' => $this->user(),
             'with' => $this->with(),
         ];
+    }
+
+    protected function has($key)
+    {
+        return $this->request->has($this->keys[$key]);
+    }
+
+    protected function get($key, $default = null)
+    {
+        return $this->request->get($this->keys[$key], $default);
     }
 }

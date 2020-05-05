@@ -60,4 +60,39 @@ class RequestResourceContextTest extends TestCase
 
         $this->assertEquals($expected_array, $context_array);
     }
+
+    /** @test */
+    public function user_can_map_context_keys()
+    {
+        /** @var ParameterBag $query_param_bag */
+        $query_param_bag = request()->query;
+        $query_param_bag->add([
+            'orderBy' => 'name',
+            'direction' => 'desc',
+            'take' => '10',
+            'side' => '3',
+        ]);
+
+        /** @var RequestResourceContext $context */
+        $context = resolve(RequestResourceContext::class);
+        $context->mapKeys([
+            'sort_by' => 'orderBy',
+            'sort_order' => 'direction',
+            'per_page' => 'take',
+            'page' => 'side',
+        ]);
+
+        $context_array = $context->toArray();
+        $expected_array = [
+            'filters' => [],
+            'page' => 3,
+            'paginate' => true,
+            'per_page' => 10,
+            'sort_by' => 'name',
+            'sort_order' => 'desc',
+            'user' => null,
+            'with' => [],
+        ];
+        $this->assertEquals($expected_array, $context_array);
+    }
 }
