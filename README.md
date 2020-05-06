@@ -1,4 +1,4 @@
-# laravel-repository
+# laravel-repository :cow:
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/mblarsen/laravel-repository.svg)](https://packagist.org/packages/mblarsen/laravel-repository)
 [![Build Status](https://scrutinizer-ci.com/g/mblarsen/laravel-repository/badges/build.png?b=master)](https://scrutinizer-ci.com/g/mblarsen/laravel-repository/build-status/master)
@@ -7,15 +7,6 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/mblarsen/laravel-repository.svg)](https://packagist.org/packages/mblarsen/laravel-repository)
 
 > Beefed up query-builder and repository to reduce boilerplate and keep your controllers lean
-
-The goal of this repository implementation:
-
-1. Separate controller code from query code
-2. avoid boilerplate for paged, filtered, and sorted resources
-3. let you be in control of the query for special cases
-
-Practically the repository class is a mix between a query builder and a
-repository.
 
 Features:
 
@@ -28,6 +19,17 @@ Features:
     -   include relations (all blocked by default)
     -   deal with paging transparently
     -   order models by their props or their relations props (with no custom SQL)
+- 100% test coverage
+    
+The goal of this package:
+
+1. Avoid boilerplate for paged, filtered, and sorted resources
+1. Let the client decided what to fetch in a safe way
+1. Separate controller logic from model logic
+1. Let you be in control of the query for special cases
+
+Practically the repository class is a mix between a query builder and a
+repository with emphasis on the retrieving stuff.
 
 This package includes one interfaces and three classes for you to build on:
 
