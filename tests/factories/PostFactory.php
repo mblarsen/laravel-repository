@@ -20,7 +20,7 @@ use Mblarsen\LaravelRepository\Tests\Models\PostMeta;
 $factory->define(Post::class, function (Faker $faker) {
     return [
         'title' => $faker->jobTitle,
-        'body' => $faker->paragraph,
+        'body' => substr($faker->paragraph, 0, 32),
     ];
 });
 

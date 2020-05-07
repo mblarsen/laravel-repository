@@ -18,6 +18,6 @@ use Mblarsen\LaravelRepository\Tests\Models\Comment;
 
 $factory->define(Comment::class, function (Faker $faker) {
     return [
-        'body' => $faker->paragraph,
+        'body' => substr($faker->paragraph, 0, 32),
     ];
 });
