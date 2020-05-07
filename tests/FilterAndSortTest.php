@@ -4,51 +4,30 @@ namespace Mblarsen\LaravelRepository\Tests;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\QueryException;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Mblarsen\LaravelRepository\Repository;
+use Mblarsen\LaravelRepository\Tests\Models\Comment;
 use Mblarsen\LaravelRepository\Tests\Models\Country;
 use Mblarsen\LaravelRepository\Tests\Models\Post;
 use Mblarsen\LaravelRepository\Tests\Models\User;
 
 class FilterAndSortTest extends TestCase
 {
-    public function setUp(): void
-    {
-        parent::setup();
-
-        $user_1 = User::firstOrCreate(['first_name' => 'foo', 'last_name' => 'jensen', 'email' => 'foo@example.com', 'password' => 'seeekwed']);
-        $user_2 = User::firstOrCreate(['first_name' => 'bar', 'last_name' => 'larsen',  'email' => 'bar@example.com', 'password' => 'seeekwed']);
-        $user_3 = User::firstOrCreate(['first_name' => 'mars', 'last_name' => 'jensen',  'email' => 'mars@example.com', 'password' => 'seeekwed']);
-
-        $post_1 = Post::create([
-            'title' => 'aliens', 'body' => 'Nothing interesting', 'user_id' => $user_1->id
-        ]);
-        $post_1->postMeta()->create(['version' => 3]);
-
-        $post_2 = Post::create([
-            'title' => 'fish', 'body' => 'Very repetitive',  'user_id' => $user_2->id
-        ]);
-        $post_2->postMeta()->create(['version' => 2]);
-        $post_2->comments()->create(['body' => 'wow', 'user_id' => $user_1->id, 'created_at' => now()]);
-
-        $post_3 = Post::create([
-            'title' => 'boats', 'body' => 'No one will read this', 'user_id' => $user_3->id
-        ]);
-        $post_3->postMeta()->create(['version' => 1]);
-        $post_3->comments()->create(['body' => 'crux', 'user_id' => $user_2->id, 'created_at' => now()->addMinutes(5)]);
-
-        $post_4 = Post::create([
-            'title' => 'bat', 'body' => 'bat-crazy', 'user_id' => $user_3->id
-        ]);
-        $post_4->postMeta()->create(['version' => 9, 'code' => 'numbat']);
-    }
+    use DatabaseMigrations;
+    use RefreshDatabase;
 
     /** @test */
     public function fetches_all()
     {
+        factory(User::class)->create(['first_name' => 'foo']);
+        factory(User::class)->create(['first_name' => 'bar']);
+        factory(User::class)->create(['first_name' => 'mars']);
+
         /** @var Collection $users */
         $users = Repository::for(User::class)->all();
 
@@ -63,6 +42,10 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function fetches_all_paginated()
     {
+        factory(User::class)->create(['first_name' => 'foo']);
+        factory(User::class)->create(['first_name' => 'bar']);
+        factory(User::class)->create(['first_name' => 'mars']);
+
         /** @var LengthAwarePaginator */
         $users = Repository::for(User::class, [
             'page' => 1,
@@ -95,6 +78,14 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function fetches_list()
     {
+        $user = factory(User::class)->create();
+        $user->posts()->saveMany([
+            factory(Post::class)->make(['title' => 'aliens']),
+            factory(Post::class)->make(['title' => 'fish']),
+            factory(Post::class)->make(['title' => 'boats']),
+            factory(Post::class)->make(['title' => 'bat']),
+        ]);
+
         /** @var Collection $posts */
         $posts = Repository::for(Post::class)->list('title');
 
@@ -112,6 +103,14 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function fetches_list_default_to_sort_by()
     {
+        $user = factory(User::class)->create();
+        $user->posts()->saveMany([
+            factory(Post::class)->make(['title' => 'aliens']),
+            factory(Post::class)->make(['title' => 'fish']),
+            factory(Post::class)->make(['title' => 'boats']),
+            factory(Post::class)->make(['title' => 'bat']),
+        ]);
+
         /** @var Collection $posts */
         $posts = Repository::for(Post::class)
             ->setDefaultSort('title')
@@ -131,6 +130,14 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function fetches_list_paginated()
     {
+        $user = factory(User::class)->create();
+        $user->posts()->saveMany([
+            factory(Post::class)->make(['title' => 'aliens']),
+            factory(Post::class)->make(['title' => 'fish']),
+            factory(Post::class)->make(['title' => 'boats']),
+            factory(Post::class)->make(['title' => 'bat']),
+        ]);
+
         /** @var LengthAwarePaginator */
         $posts = Repository::for(
             Post::class,
@@ -157,6 +164,10 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function fetches_list_with_callback()
     {
+        factory(User::class)->create(['first_name' => 'foo', 'last_name' => 'jensen']);
+        factory(User::class)->create(['first_name' => 'bar', 'last_name' => 'larsen']);
+        factory(User::class)->create(['first_name' => 'mars', 'last_name' => 'jensen']);
+
         /** @var Collection $posts */
         $users = Repository::for(User::class)->list(function ($user) {
             return $user->full_name;
@@ -175,6 +186,10 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function fetches_list_paginated_with_callback()
     {
+        factory(User::class)->create(['first_name' => 'foo', 'last_name' => 'jensen']);
+        factory(User::class)->create(['first_name' => 'bar', 'last_name' => 'larsen']);
+        factory(User::class)->create(['first_name' => 'mars', 'last_name' => 'jensen']);
+
         /** @var LengthAwarePaginator */
         $users = Repository::for(
             User::class,
@@ -196,6 +211,8 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function fetch_one()
     {
+        factory(User::class)->create();
+
         $user = Repository::for(User::class)->find(1);
 
         $this->assertInstanceOf(User::class, $user);
@@ -204,6 +221,8 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function includes_relations()
     {
+        factory(User::class)->create();
+
         $repository = Repository::for(User::class, [
             'with' => [
                 'comments',
@@ -222,6 +241,8 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function includes_allow_all()
     {
+        factory(User::class)->create();
+
         $repository = Repository::for(User::class, [
             'with' => [
                 'comments',
@@ -240,6 +261,8 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function includes_default_with()
     {
+        factory(User::class)->create();
+
         $repository = Repository::for(User::class, [
             'with' => [
                 'comments',
@@ -257,6 +280,8 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function set_allowed_with_is_set()
     {
+        factory(User::class)->create();
+
         $repository = Repository::for(User::class);
         $repository->setContext([
             'with' => [
@@ -270,6 +295,10 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function sort_asc()
     {
+        factory(User::class)->create(['first_name' => 'foo']);
+        factory(User::class)->create(['first_name' => 'bar']);
+        factory(User::class)->create(['first_name' => 'mars']);
+
         $repository = Repository::for(User::class, [
             'sort_by' => 'first_name',
         ]);
@@ -283,6 +312,10 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function sort_desc()
     {
+        factory(User::class)->create(['first_name' => 'foo']);
+        factory(User::class)->create(['first_name' => 'bar']);
+        factory(User::class)->create(['first_name' => 'mars']);
+
         $repository = Repository::for(User::class, [
             'sort_by' => 'first_name',
             'sort_order' => 'desc',
@@ -297,6 +330,10 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function sort_default()
     {
+        factory(User::class)->create(['first_name' => 'foo']);
+        factory(User::class)->create(['first_name' => 'bar']);
+        factory(User::class)->create(['first_name' => 'mars']);
+
         $repository = Repository::for(User::class)
             ->setDefaultSort('first_name');
 
@@ -309,6 +346,19 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function sort_by_has_one_relation()
     {
+        $user = factory(User::class)->create(['first_name' => 'foo']);
+        $user->posts()->saveMany([
+            factory(Post::class)->create(['title' => 'aliens', 'user_id' => $user->id]),
+            factory(Post::class)->create(['title' => 'fish', 'user_id' => $user->id]),
+            factory(Post::class)->create(['title' => 'boats', 'user_id' => $user->id]),
+            factory(Post::class)->create(['title' => 'bat', 'user_id' => $user->id]),
+        ]);
+
+        $user->posts[0]->postMeta->update(['version' => 3]);
+        $user->posts[1]->postMeta->update(['version' => 2]);
+        $user->posts[2]->postMeta->update(['version' => 1]);
+        $user->posts[3]->postMeta->update(['version' => 9]);
+
         $repository = Repository::for(Post::class)
             ->setContext([
                 'sort_by' => 'postMeta.version',
@@ -323,6 +373,15 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function sort_by_belongs_to_relation()
     {
+        $user_1 = factory(User::class)->create(['first_name' => 'foo']);
+        $user_2 = factory(User::class)->create(['first_name' => 'bar']);
+        $user_3 = factory(User::class)->create(['first_name' => 'mars']);
+
+        factory(Post::class)->create(['title' => 'aliens', 'user_id' => $user_1->id]);
+        factory(Post::class)->create(['title' => 'fish', 'user_id' => $user_2->id]);
+        factory(Post::class)->create(['title' => 'boats', 'user_id' => $user_3->id]);
+        factory(Post::class)->create(['title' => 'bat', 'user_id' => $user_3->id]);
+
         $repository = Repository::for(Post::class)
             ->setContext([
                 'sort_by' => 'user.first_name',
@@ -335,6 +394,22 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function sort_by_morph_relation()
     {
+        $user = factory(User::class)->create();
+
+        $user->posts()->saveMany([
+            factory(Post::class)->make(['title' => 'aliens']),
+            factory(Post::class)->make(['title' => 'fish']),
+            factory(Post::class)->make(['title' => 'boats']),
+            factory(Post::class)->make(['title' => 'bat']),
+        ]);
+
+        $user->posts[1]->comments()->save(
+            factory(Comment::class)->make(['user_id' => $user->id, 'created_at' => now()])
+        );
+        $user->posts[2]->comments()->save(
+            factory(Comment::class)->make(['user_id' => $user->id, 'created_at' => now()->addMinutes(5)])
+        );
+
         $repository = Repository::for(Post::class)
             ->setContext([
                 'sort_by' => 'comments.created_at',
@@ -382,6 +457,14 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function filter_one()
     {
+        $user = factory(User::class)->create();
+        $user->posts()->saveMany([
+            factory(Post::class)->make(['title' => 'aliens']),
+            factory(Post::class)->make(['title' => 'fish']),
+            factory(Post::class)->make(['title' => 'boats']),
+            factory(Post::class)->make(['title' => 'bat']),
+        ]);
+
         $repository = Repository::for(Post::class)
             ->setContext([
                 'filters' => [
@@ -397,6 +480,14 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function filter_one_exact()
     {
+        $user = factory(User::class)->create();
+        $user->posts()->saveMany([
+            factory(Post::class)->make(['title' => 'aliens']),
+            factory(Post::class)->make(['title' => 'fish']),
+            factory(Post::class)->make(['title' => 'boats']),
+            factory(Post::class)->make(['title' => 'bat']),
+        ]);
+
         $repository = Repository::for(Post::class)
             ->setContext([
                 'filters' => [
@@ -421,6 +512,14 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function filter_multiple_different_values()
     {
+        $user = factory(User::class)->create();
+        $user->posts()->saveMany([
+            factory(Post::class)->make(['title' => 'aliens', 'body' => 'foo']),
+            factory(Post::class)->make(['title' => 'fish', 'body' => 'nobody']),
+            factory(Post::class)->make(['title' => 'boats', 'body' => 'foo']),
+            factory(Post::class)->make(['title' => 'bat', 'body' => 'foo']),
+        ]);
+
         $repository = Repository::for(Post::class)
             ->setContext([
                 'filters' => [
@@ -437,6 +536,14 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function filter_multiple_different_values_exact()
     {
+        $user = factory(User::class)->create();
+        $user->posts()->saveMany([
+            factory(Post::class)->make(['title' => 'aliens', 'body' => 'foo']),
+            factory(Post::class)->make(['title' => 'fish', 'body' => 'nobody']),
+            factory(Post::class)->make(['title' => 'boats', 'body' => 'foo']),
+            factory(Post::class)->make(['title' => 'bat', 'body' => 'foo']),
+        ]);
+
         $repository = Repository::for(Post::class)
             ->setContext([
                 'filters' => [
@@ -461,10 +568,18 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function filter_multiple_same_value()
     {
+        $user = factory(User::class)->create();
+        $user->posts()->saveMany([
+            factory(Post::class)->make(['title' => 'aliens', 'body' => 'foo']),
+            factory(Post::class)->make(['title' => 'fish', 'body' => 'nobody']),
+            factory(Post::class)->make(['title' => 'boats', 'body' => 'singer']),
+            factory(Post::class)->make(['title' => 'bat', 'body' => 'foo']),
+        ]);
+
         $repository = Repository::for(Post::class)
             ->setContext([
                 'filters' => [
-                    'title!|body' => 'i', // alien and fish has in title, boat has in body
+                    'title|body' => 'i', // alien and fish has in title, boats has in body
                 ]
             ]);
         /** @var Collection */
@@ -475,6 +590,14 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function filter_multiple_same_value_exact()
     {
+        $user = factory(User::class)->create();
+        $user->posts()->saveMany([
+            factory(Post::class)->make(['title' => 'aliens', 'body' => 'foo']),
+            factory(Post::class)->make(['title' => 'fish', 'body' => 'nobody']),
+            factory(Post::class)->make(['title' => 'boats', 'body' => 'singer']),
+            factory(Post::class)->make(['title' => 'bats', 'body' => 'foo']),
+        ]);
+
         $repository = Repository::for(Post::class)
             ->setContext([
                 'filters' => [
@@ -498,7 +621,7 @@ class FilterAndSortTest extends TestCase
             ]
         ]);
         $posts = $repository->all();
-        $this->assertEquals(1, $posts->count());
+        $this->assertEquals(0, $posts->count());
 
         $repository->setContext([
             'filters' => [
@@ -506,18 +629,26 @@ class FilterAndSortTest extends TestCase
             ]
         ]);
         $posts = $repository->all();
-        $this->assertEquals(1, $posts->count());
+        $this->assertEquals(0, $posts->count());
     }
 
     /** @test */
     public function filter_using_concat()
     {
         try {
+            $user = factory(User::class)->create();
+            $user->posts()->saveMany([
+                factory(Post::class)->make(['title' => 'aliens', 'body' => 'Nothing is out there']),
+                factory(Post::class)->make(['title' => 'fish', 'body' => 'nobody']),
+                factory(Post::class)->make(['title' => 'boats', 'body' => 'No one is on them']),
+                factory(Post::class)->make(['title' => 'bats', 'body' => 'foo']),
+            ]);
+
             $repository = Repository::for(Post::class)
                 ->setContext([
                     'sort_by' => 'title',
                     'filters' => [
-                        'title+body' => 's no', // 'alients Nothing...', 'boats No one...'
+                        'title+body' => 's no', // 'aliens Nothing...', 'boats No one...'
                     ]
                 ]);
             /** @var Collection */
@@ -538,6 +669,14 @@ class FilterAndSortTest extends TestCase
     public function filter_using_concat_exact()
     {
         try {
+            $user = factory(User::class)->create();
+            $user->posts()->saveMany([
+                factory(Post::class)->make(['title' => 'aliens', 'body' => 'Nothing is out there']),
+                factory(Post::class)->make(['title' => 'fish', 'body' => 'nobody']),
+                factory(Post::class)->make(['title' => 'boats', 'body' => 'No one is on them']),
+                factory(Post::class)->make(['title' => 'bats', 'body' => 'foo']),
+            ]);
+
             $repository = Repository::for(Post::class)
                 ->setContext([
                     'sort_by' => 'title',
@@ -552,7 +691,7 @@ class FilterAndSortTest extends TestCase
             $repository->setContext([
                 'sort_by' => 'title',
                 'filters' => [
-                    'title+body!' => 'aliens Nothing interesting',
+                    'title+body!' => 'aliens Nothing is out there',
                 ]
             ]);
             /** @var Collection */
@@ -571,6 +710,19 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function filter_by_relation()
     {
+        $user = factory(User::class)->create(['first_name' => 'foo']);
+        $user->posts()->saveMany([
+            factory(Post::class)->create(['title' => 'aliens', 'user_id' => $user->id]),
+            factory(Post::class)->create(['title' => 'fish', 'user_id' => $user->id]),
+            factory(Post::class)->create(['title' => 'boats', 'user_id' => $user->id]),
+            factory(Post::class)->create(['title' => 'bat', 'user_id' => $user->id]),
+        ]);
+
+        $user->posts[0]->postMeta->update(['version' => 3]);
+        $user->posts[1]->postMeta->update(['version' => 2]);
+        $user->posts[2]->postMeta->update(['version' => 1]);
+        $user->posts[3]->postMeta->update(['version' => 9]);
+
         $repository = Repository::for(Post::class)
             ->setContext([
                 'filters' => [
@@ -586,6 +738,19 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function filter_by_relation_exact_number()
     {
+        $user = factory(User::class)->create(['first_name' => 'foo']);
+        $user->posts()->saveMany([
+            factory(Post::class)->create(['title' => 'aliens', 'user_id' => $user->id]),
+            factory(Post::class)->create(['title' => 'fish', 'user_id' => $user->id]),
+            factory(Post::class)->create(['title' => 'boats', 'user_id' => $user->id]),
+            factory(Post::class)->create(['title' => 'bat', 'user_id' => $user->id]),
+        ]);
+
+        $user->posts[0]->postMeta->update(['version' => 3]);
+        $user->posts[1]->postMeta->update(['version' => 2]);
+        $user->posts[2]->postMeta->update(['version' => 1]);
+        $user->posts[3]->postMeta->update(['version' => 9]);
+
         $repository = Repository::for(Post::class)
             ->setContext([
                 'filters' => [
@@ -601,6 +766,19 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function filter_by_relation_exact_string()
     {
+        $user = factory(User::class)->create(['first_name' => 'foo']);
+        $user->posts()->saveMany([
+            factory(Post::class)->create(['title' => 'aliens', 'user_id' => $user->id]),
+            factory(Post::class)->create(['title' => 'fish', 'user_id' => $user->id]),
+            factory(Post::class)->create(['title' => 'boats', 'user_id' => $user->id]),
+            factory(Post::class)->create(['title' => 'bat', 'user_id' => $user->id]),
+        ]);
+
+        $user->posts[0]->postMeta->update(['version' => 3]);
+        $user->posts[1]->postMeta->update(['version' => 2]);
+        $user->posts[2]->postMeta->update(['version' => 1]);
+        $user->posts[3]->postMeta->update(['version' => 9, 'code' => 'numbat']);
+
         $repository = Repository::for(Post::class)
             ->setContext([
                 'filters' => [
@@ -616,6 +794,22 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function filter_by_relation_deeper()
     {
+        $user_1 = factory(User::class)->create(['first_name' => 'foo']);
+        $user_2 = factory(User::class)->create(['first_name' => 'bar']);
+        $user_3 = factory(User::class)->create(['first_name' => 'mars']);
+
+        $posts = [
+            factory(Post::class)->create(['title' => 'aliens', 'user_id' => $user_1->id]),
+            factory(Post::class)->create(['title' => 'fish', 'user_id' => $user_2->id]),
+            factory(Post::class)->create(['title' => 'boats', 'user_id' => $user_3->id]),
+            factory(Post::class)->create(['title' => 'bat', 'user_id' => $user_3->id]),
+        ];
+
+        $posts[0]->postMeta->update(['version' => 3]);
+        $posts[1]->postMeta->update(['version' => 2]);
+        $posts[2]->postMeta->update(['version' => 1]);
+        $posts[3]->postMeta->update(['version' => 9]);
+
         $repository = Repository::for(User::class)
             ->setContext([
                 'filters' => [
@@ -641,6 +835,22 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function filter_by_relation_deeper_exact()
     {
+        $user_1 = factory(User::class)->create(['first_name' => 'foo']);
+        $user_2 = factory(User::class)->create(['first_name' => 'bar']);
+        $user_3 = factory(User::class)->create(['first_name' => 'mars']);
+
+        $posts = [
+            factory(Post::class)->create(['title' => 'aliens', 'user_id' => $user_1->id]),
+            factory(Post::class)->create(['title' => 'fish', 'user_id' => $user_2->id]),
+            factory(Post::class)->create(['title' => 'boats', 'user_id' => $user_3->id]),
+            factory(Post::class)->create(['title' => 'bat', 'user_id' => $user_3->id]),
+        ];
+
+        $posts[0]->postMeta->update(['version' => 3]);
+        $posts[1]->postMeta->update(['version' => 2]);
+        $posts[2]->postMeta->update(['version' => 1]);
+        $posts[3]->postMeta->update(['version' => 9, 'code' => 'numbat']);
+
         $repository = Repository::for(User::class)
             ->setContext([
                 'filters' => [
@@ -672,6 +882,15 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function filter_by_relation_multiple()
     {
+        $user_1 = factory(User::class)->create(['first_name' => 'foo']);
+        $user_2 = factory(User::class)->create(['first_name' => 'bar']);
+        $user_3 = factory(User::class)->create(['first_name' => 'mars']);
+
+        factory(Post::class)->create(['title' => 'aliens', 'user_id' => $user_1->id]);
+        factory(Post::class)->create(['title' => 'fish', 'user_id' => $user_2->id]);
+        factory(Post::class)->create(['title' => 'boats', 'user_id' => $user_3->id]);
+        factory(Post::class)->create(['title' => 'bat', 'user_id' => $user_3->id]);
+
         $repository = Repository::for(User::class)
             ->setContext([
                 'filters' => [
@@ -693,6 +912,15 @@ class FilterAndSortTest extends TestCase
     /** @test */
     public function filter_by_relation_multiple_exact()
     {
+        $user_1 = factory(User::class)->create(['first_name' => 'foo']);
+        $user_2 = factory(User::class)->create(['first_name' => 'bar']);
+        $user_3 = factory(User::class)->create(['first_name' => 'mars']);
+
+        factory(Post::class)->create(['title' => 'aliens', 'user_id' => $user_1->id]);
+        factory(Post::class)->create(['title' => 'fish', 'user_id' => $user_2->id]);
+        factory(Post::class)->create(['title' => 'boats', 'user_id' => $user_3->id]);
+        factory(Post::class)->create(['title' => 'bat', 'user_id' => $user_3->id]);
+
         $repository = Repository::for(User::class)
             ->setContext([
                 'filters' => [

@@ -4,6 +4,8 @@ namespace Mblarsen\LaravelRepository\Tests;
 
 use BadMethodCallException;
 use Exception;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Mblarsen\LaravelRepository\Repository;
 use Mblarsen\LaravelRepository\Tests\Models\User;
@@ -12,6 +14,9 @@ use Mblarsen\LaravelRepository\Tests\Resources\UserResourceCollection;
 
 class ResourceTest extends TestCase
 {
+    use DatabaseMigrations;
+    use RefreshDatabase;
+
     /** @test */
     public function outputs_resource()
     {

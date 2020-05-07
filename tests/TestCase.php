@@ -61,7 +61,7 @@ class TestCase extends OrchestraTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->artisan('db:wipe', ['--database' => 'testbench'])->run();
-        $this->artisan('migrate', ['--database' => 'testbench'])->run();
+
+        $this->loadFactoriesUsing($this->app, __DIR__ . '/factories');
     }
 }

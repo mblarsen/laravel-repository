@@ -3,11 +3,16 @@
 namespace Mblarsen\LaravelRepository\Tests;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mblarsen\LaravelRepository\Repository;
 use Mblarsen\LaravelRepository\Tests\Models\User;
 
 class CrudTest extends TestCase
 {
+    use DatabaseMigrations;
+    use RefreshDatabase;
+
     /** @test */
     public function can_create()
     {

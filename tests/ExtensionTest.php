@@ -2,12 +2,17 @@
 
 namespace Mblarsen\LaravelRepository\Tests;
 
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Mblarsen\LaravelRepository\Tests\Models\User;
 use Mblarsen\LaravelRepository\Tests\Repositories\UserRepository;
 
 class ExtensionTest extends TestCase
 {
+    use DatabaseMigrations;
+    use RefreshDatabase;
+
     public function setUp(): void
     {
         parent::setup();

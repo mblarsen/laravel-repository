@@ -2,12 +2,17 @@
 
 namespace Mblarsen\LaravelRepository\Tests;
 
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mblarsen\LaravelRepository\RequestResourceContext;
 use Mblarsen\LaravelRepository\ResourceContext;
 use Mblarsen\LaravelRepository\Tests\Models\User;
 
 class SetupTest extends TestCase
 {
+    use DatabaseMigrations;
+    use RefreshDatabase;
+
     /** @test */
     public function migration_works()
     {
