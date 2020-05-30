@@ -3,6 +3,7 @@
 namespace Mblarsen\LaravelRepository;
 
 use BadMethodCallException;
+use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -38,6 +39,9 @@ class Repository
 
     /** @var ResourceContext $resource_context */
     protected $resource_context;
+
+    /** @var bool */
+    protected $should_authorize = false;
 
     /** @var string|callable $list_column */
     protected $default_list_column;
@@ -130,6 +134,7 @@ class Repository
      * @param ResourceContext|array $resource_context
      * @param bool $set_allowed_with when true 'with' of the context is set to
      *                               allowed with
+     * @return $this
      */
     public function setContext($resource_context, bool $set_allowed_with = false)
     {
@@ -146,10 +151,24 @@ class Repository
 
     /**
      * Set the model
+     *
+     * @return $this
      */
     public function setModel(string $model)
     {
         $this->model = $model;
+
+        return $this;
+    }
+
+    /**
+     * Toggle authorization
+     *
+     * @return $this
+     */
+    public function shouldAuthorize(bool $value = true)
+    {
+        $this->should_authorize = $value;
 
         return $this;
     }
@@ -164,6 +183,8 @@ class Repository
      */
     public function all($query = null)
     {
+        $this->authorize('viewAny', $this->model);
+
         $query = $this->modelQuery($query);
 
         $this
@@ -209,6 +230,8 @@ class Repository
      */
     public function list($column = null, $query = null)
     {
+        $this->authorize('viewAny', $this->model);
+
         $query = $this->modelQuery($query);
 
         $column = $column
@@ -256,6 +279,8 @@ class Repository
      */
     public function find($id, $query = null)
     {
+        $this->authorize('viewAny', $this->model);
+
         $query = $this->modelQuery($query);
 
         $this
@@ -273,11 +298,15 @@ class Repository
 
     public function create(array $data): Model
     {
+        $this->authorize('create', $this->model);
+
         return $this->model::create($data);
     }
 
     public function update(Model $model, array $data): Model
     {
+        $this->authorize('update', $model);
+
         $model->update($data);
 
         return $model;
@@ -285,6 +314,8 @@ class Repository
 
     public function destroy(Model $model)
     {
+        $this->authorize('destroy', $model);
+
         $model->delete();
     }
 
@@ -300,6 +331,15 @@ class Repository
 
         if ($model !== $query_model) {
             throw new InvalidArgumentException("The input query and model does not match");
+        }
+
+        return $this;
+    }
+
+    protected function authorize($ability, $arguments)
+    {
+        if ($this->should_authorize) {
+            app(Gate::class)->authorize($ability, $arguments);
         }
 
         return $this;
