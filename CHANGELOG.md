@@ -4,6 +4,8 @@ All notable changes to `laravel-repository` will be documented in this file.
 
 ## next
 
+-   feat: allow passing 'guard' to `user()` on ResourceContext.
+
 ## 0.12.0
 
 -   feat: you can change the default key names used in

@@ -58,26 +58,41 @@ final class ArrayResourceContext implements ResourceContext
         return $key;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function filters(): array
     {
         return $this->get('filters', []);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function page(): int
     {
         return $this->get('page', 1);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function perPage(): int
     {
         return $this->get('per_page', 15);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function paginate(): bool
     {
         return (bool) $this->get('page', false);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function sortBy(): array
     {
         return [
@@ -86,12 +101,18 @@ final class ArrayResourceContext implements ResourceContext
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function with(): array
     {
         return $this->get('with', []);
     }
 
-    public function user(): ?Model
+    /**
+     * @inheritdoc
+     */
+    public function user($guard = null): ?Model
     {
         return $this->get('user');
     }
@@ -135,13 +156,16 @@ final class ArrayResourceContext implements ResourceContext
         return $this;
     }
 
-    public function toArray(): array
+    /**
+     * @inheritdoc
+     */
+    public function toArray($guard = null): array
     {
         return array_merge(
             $this->context,
             [
                 'paginate' => $this->paginate(),
-                'user' => $this->user()
+                'user' => $this->user($guard)
             ]
         );
     }
