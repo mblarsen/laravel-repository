@@ -54,9 +54,9 @@ class RequestResourceContext implements ResourceContext
         ];
     }
 
-    public function user(): ?Model
+    public function user($guard = null): ?Model
     {
-        return $this->request->user();
+        return $this->request->user($guard);
     }
 
     public function with(): array
@@ -74,9 +74,9 @@ class RequestResourceContext implements ResourceContext
     }
 
     /**
-     * Convert the request context to an array
+     * @inheritdoc
      */
-    public function toArray(): array
+    public function toArray($guard = null): array
     {
         [$sort_by, $sort_order] = $this->sortBy();
         return [
@@ -86,7 +86,7 @@ class RequestResourceContext implements ResourceContext
             'per_page' => $this->get('per_page'),
             'sort_by' => $sort_by,
             'sort_order' => $sort_order,
-            'user' => $this->user(),
+            'user' => $this->user($guard),
             'with' => $this->with(),
         ];
     }
