@@ -19,8 +19,8 @@ Features:
     -   include relations (all blocked by default)
     -   deal with paging transparently
     -   order models by their props or their relations props (with no custom SQL)
-- 100% test coverage
-    
+-   100% test coverage
+
 The goal of this package:
 
 1. Avoid boilerplate for paged, filtered, and sorted resources
@@ -407,6 +407,7 @@ $repository = Repository::for(User::class, [
 -   [`setAllowedWith(array $allowed)`](#setAllowedWith)
 -   [`setDefaultSort(string $by, string $order = 'asc')`](#setDefaulSort)
 -   [`setDefaultWith(array $with)`](#setDefaultWith)
+-   [`shouldAuthorize(bool $value = true)`](#shouldAuthorize)
 
 When extending the base repository you may want to check out these additional
 functions:
@@ -545,7 +546,28 @@ protected function register()
 }
 ```
 
-See [test case](tests/ExtensionTest.php).
+### `shouldAuthorize(bool $value = true)`
+
+<a name="shouldAuthorize"></a>
+
+When set to true authorization is performed before any query is performed.
+
+| method  | action  |
+| ------- | ------- |
+| all     | viewAny |
+| list    | viewAny |
+| find    | viewAny |
+| create  | create  |
+| update  | create  |
+| destroy | destroy |
+
+Example:
+
+```php
+Repository::for(Post::class)
+    ->shouldAuthorize()
+    ->update($post, ['author' => 'me');
+```
 
 ### `interface ResourceContext`
 
@@ -606,4 +628,3 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
-
