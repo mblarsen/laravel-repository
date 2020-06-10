@@ -29,7 +29,7 @@ interface ResourceContext
     /**
      * A tuple withe [column, direction], eg. [created_at, desc]
      *
-     * @return [string,'asc'|'desc'|null]
+     * @return string[]
      */
     public function sortBy(): array;
 
