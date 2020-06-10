@@ -4,6 +4,8 @@ All notable changes to `laravel-repository` will be documented in this file.
 
 ## next
 
+## 0.13.0
+
 -   feat: allow passing 'guard' to `user()` on ResourceContext.
 -   feat: support authorization (mimics authorizeResource)
 
