@@ -22,7 +22,7 @@ class AuthTest extends TestCase
         $post = Repository::for(Post::class)->create([
             'title' => 'aliens',
             'body' => 'Dolor eius amet pariatur minus repudiandae',
-            'user_id' => $user,
+            'user_id' => $user->id
         ]);
 
         $this->assertNotNull($post);
@@ -40,7 +40,7 @@ class AuthTest extends TestCase
             ->create([
                 'title' => 'aliens',
                 'body' => 'Dolor eius amet pariatur minus repudiandae',
-                'user_id' => $user,
+                'user_id' => $user->id
             ]);
     }
 
@@ -56,7 +56,7 @@ class AuthTest extends TestCase
             ->create([
                 'title' => 'aliens',
                 'body' => 'Dolor eius amet pariatur minus repudiandae',
-                'user_id' => $user,
+                'user_id' => $user->id
             ]);
 
         $this->assertNotNull($post);
