@@ -13,10 +13,15 @@ trait WrapsInResource
     /** @var string */
     protected $resource_collection;
 
+    /**
+     * @return $this
+     */
     public function setResource(string $resource, string $resource_collection = null)
     {
         $this->resource = $resource;
         $this->resource_collection = $resource_collection;
+
+        return $this;
     }
 
     private function wrapInResource($value)
