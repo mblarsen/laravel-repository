@@ -38,6 +38,8 @@ This package includes one interfaces and three classes for you to build on:
 -   `RequestResourceContext`, draws data from the incoming Request object.
 -   `ArrayResourceContext`, you provide the data. Good for testing.
 
+ [![Contact me on Codementor](https://www.codementor.io/m-badges/mblarsen/im-a-cm-b.svg)](https://www.codementor.io/@mblarsen?refer=badge)
+
 ## Installation
 
 You can install the package via composer:
